@@ -1,0 +1,85 @@
+#!/bin/bash
+
+. ~/tsim.inc
+
+tput reset
+
+if [ ! -d $TsimDir ]
+then
+	echo -e "Failure to locate $TsimDir"
+	exit 1
+else	pushd $TsimDir 1>&2 > ~/.dump
+fi
+
+if [ ! -d $CudaProject ]
+then
+	echo -e "Failure to locate $CudaProject"
+	exit 2
+else	cd $CudaProject
+fi
+
+if test `find src -type f | grep .cu | wc -l` -gt 0
+then
+	for x in `ls src`
+	do
+		if [ -d $x ]
+		then continue
+		fi
+		
+		name=`basename $x .cu`
+		printf	"Compiling Source: %16s\t" "$x"
+		$Comp $StdWarn -c src/$x -o $TsimDir/$CudaProject/sbin/${name}.o -I $TsimDir/$CudaProject $StdPkg
+		
+		if [ -f $TsimDir/$CudaProject/sbin/${name}.o ]
+		then
+			echo "Success"
+		else	echo "Failure"
+		fi
+
+	done
+fi
+
+if test `find sbin -type f | grep .o | wc -l` -gt 0
+then
+	if [ -f $TsimDir/$CudaProject/lib/$LibTsimCuda ]
+	then
+		rm -f $TsimDir/$CudaProject/lib/$LibTsimCuda
+	fi
+
+	ar cq $TsimDir/$CudaProject/lib/$LibTsimCuda $TsimDir/$CudaProject/sbin/*.o
+	
+	if [ -f $TsimDir/$CudaProject/lib/$LibTsimCuda ]
+	then
+		echo "Cuda Library Built"
+		LibTsimCuda="$TsimDir/$CudaProject/lib/$LibTsimCuda"
+	else	LibTsimCuda=""
+	fi
+
+	rm -f $TsimDir/$CudaProject/sbin/*.o
+
+fi
+
+if test `find main -type f | grep .cu | wc -l` -gt 0
+then
+	for x in `ls main`
+	do
+		if [ -d $x ]
+		then continue
+		fi
+
+		name=`basename $x .cu`
+		printf	"Compiling Program: %15s\t" "$x"
+		$Comp $StdWarn main/$x -o $TsimDir/$CudaProject/bin/$name $LibTsimCuda -I $TsimDir/$CudaProject $StdPkg
+
+		if [ -f $TsimDir/$CudaProject/bin/$name ]
+		then
+			echo "Success"
+		else	echo "Failure"
+		fi
+
+	done
+
+fi
+
+popd 1>&2 > ~/.dump
+
