@@ -1,5 +1,5 @@
-#if	!defined( __tsim__ )
-#	 define	  __tsim__
+#if	!defined( __tsx__ )
+#	 define	  __tsx__
 
 #if	 defined( __cplusplus )
 extern "C"{

@@ -10,6 +10,9 @@ int main(int argc, char ** argv){
 	app.width(500);
 	app.height(500);
 
+	app.x(50);
+	app.y(33);
+
 	app.start();
 
 	while( app.running() ){

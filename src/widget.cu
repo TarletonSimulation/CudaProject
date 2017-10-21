@@ -35,7 +35,7 @@ namespace tsx{
 
 		memset(&xwin_attr, 0, sizeof(xwin_attr));
 
-		xwin_attr.event_mask		= XEVT_DEFAULT_APP_MASK;
+		xwin_attr.event_mask		= XEVT_BUTTON_PRESS_MASK | XEVT_KEY_PRESS_MASK | XEVT_WINDOW_MASK;
 		xwin_attr.border_pixel		= 0x000000;	// default values that can be changed by the programmer or user //
 		xwin_attr.background_pixel	= 0x000000;
 

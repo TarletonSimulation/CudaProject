@@ -67,7 +67,7 @@ namespace tsx{
 			}
 
 			if( xWidget::xwidget_attr::needs_repos() ){
-				XMoveWindow( xDisplay::display(), xWidget::drawable(), xWidget::width(), xWidget::height() );
+				XMoveWindow( xDisplay::display(), xWidget::drawable(), xWidget::x(), xWidget::y() );
 			}
 		}
 		return	running();
@@ -112,5 +112,21 @@ namespace tsx{
 	xApp::event_type()
 	{return	xDisplay::xEvent::type();}
 
+	void
+	xApp::x(int X){
+		xWidget::x(X);
+	}
+
+	int
+	xApp::x()
+	{return	xWidget::x();}
+
+	void
+	xApp::y(int Y)
+	{xWidget::y(Y);}
+
+	int
+	xApp::y()
+	{return	xWidget::y();}
 }
 

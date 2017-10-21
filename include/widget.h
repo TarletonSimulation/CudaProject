@@ -1,10 +1,10 @@
-#if	!defined( __tsx_window__ )
-#	 define	  __tsx_window__
+#if	!defined( __tsx_widget__ )
+#	 define	  __tsx_widget__
 
 #include <tsx/prefix.h>
 #include <tsx/display.h>
 
-#include <tsx/bits/window.h>
+#include <tsx/bits/widget.h>
 
 namespace tsx{
 

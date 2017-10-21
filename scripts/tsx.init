@@ -1,7 +1,5 @@
 #!/bin/bash
 
-. ~/tsx.env
-
 if [ ! -d "$TsimDir" ]
 then
 	mkdir $TsimDir
@@ -15,6 +13,8 @@ then
 	git clone "$GitMain/`basename $TsimDir`/`basename $CudaProject`.git"
 	echo
 fi
+
+. $CudaProject/scripts/tsx.env
 
 for x in $req_dirs $ign_dirs $sys_dirs
 do
