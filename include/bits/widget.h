@@ -1,5 +1,5 @@
-#if	!defined( __tsx__window_bits__ )
-#	 define	  __tsx__window_bits__
+#if	!defined( __tsx__widget_bits__ )
+#	 define	  __tsx__widget_bits__
 
 // this file includes window event masks as well as window bits //
 
