@@ -1,27 +1,29 @@
 #include <tsx/prefix.h>
 #include <tsx/display.h>
-#include <tsx/window.h>
+#include <tsx/widget.h>
+#include <tsx/application.h>
 
 int main(int argc, char ** argv){
 	
-	tsx::xDisplay	display;
-	tsx::xwindow_attr	attr;
+	tsx::xApp	app(argc,argv);
 
-	if( display.connected() ){
-		
-		std::cout << "Connected to XServer: " << display.server_name() << std::endl;
-		std::cout << "Connection ID: " << display.connection() << std::endl;
-		std::cout << "Screen Name: " << display.screen_name() << std::endl;
-		std::cout << "Screen Width: " << display.width() << std::endl;
-		std::cout << "Screen Height: " << display.height() << std::endl;
+	app.width(500);
+	app.height(500);
 
-		display.close();
+	app.start();
 
-		if( display.connected() ){
-			std::cout << "Failed to disconnect..." << std::endl;
-		}else	std::cout << "Disconnected from XServer" << std::endl;
+	while( app.running() ){
+		app.next_event();
 
-	}else	std::cout << "Failed to connect..." << std::endl;
+		switch( app.event_type() ){
+			case	KeyPress:
+				std::cout << "A key was pressed" << std::endl;
+				app.stop();
+				break;
+		}
+	}
 
+	app.destroy();
+	
 return	0;
 }

@@ -5,20 +5,20 @@ namespace tsx{
 static	bool	block_connection = false;
 
 	xDisplay::xDisplay(std::string Server){
-		xdisplay = nullptr;
+		xEvent::xdisplay = nullptr;
 		xscrn	= -1;
 
 		if( !block_connection ){
 			if( Server is "" )
 				xserver_name = "DISPLAY";
 			else	xserver_name = Server;
-			xdisplay = XOpenDisplay( getenv( xserver_name.c_str() ) );
+			xEvent::xdisplay = XOpenDisplay( getenv( xserver_name.c_str() ) );
 
-			if(xdisplay is null){
+			if(xEvent::xdisplay is null){
 				xserver_name = "FailedToConnect";
 			}else	is_connected = true;
 
-			xscrn	= DefaultScreen(xdisplay);
+			xscrn	= DefaultScreen(xEvent::xdisplay);
 			memset(&xevent,0,sizeof(xevent));
 		}
 
@@ -27,15 +27,35 @@ static	bool	block_connection = false;
 
 	xDisplay::~xDisplay(){
 		if( connected() ){
-			close();
-			xdisplay = nullptr;
+			disconnect();
+			xEvent::xdisplay = nullptr;
 		}
 	}
+	
+	Display *
+	xDisplay::display(){
+		if( xEvent::xdisplay is null )
+			return	null;
+		else	return	xEvent::xdisplay;
+	}
 
+	Visual	*
+	xDisplay::visual(){
+		if( connected() )
+			return	DefaultVisual(display(), xscrn);
+		else	return	nullptr;
+	}
+
+	unsigned int
+	xDisplay::depth(){
+		if( !connected() )
+			return	0;
+		else	return	DefaultDepth(display(),xscrn);
+	}
 
 	std::string
 	xDisplay::screen_name(){
-		return	std::string( DisplayString(xdisplay) );
+		return	std::string( DisplayString(xEvent::xdisplay) );
 	}
 
 	std::string
@@ -45,7 +65,7 @@ static	bool	block_connection = false;
 
 	bool
 	xDisplay::connected(){
-		if( xdisplay is null )
+		if( xEvent::xdisplay is null )
 			return	false;
 	else	if( is_connected is true )
 			return	is_connected;
@@ -55,7 +75,7 @@ static	bool	block_connection = false;
 	int
 	xDisplay::connection(){
 		if( connected() )
-			return	ConnectionNumber(xdisplay);
+			return	ConnectionNumber(xEvent::xdisplay);
 		else	return	-1;
 	}
 
@@ -68,8 +88,8 @@ static	bool	block_connection = false;
 				xserver_name = "DISPLAY";
 			else	xserver_name = Server;
 
-			xdisplay = XOpenDisplay( xserver_name.c_str() );
-			if( xdisplay isnot null ){
+			xEvent::xdisplay = XOpenDisplay( xserver_name.c_str() );
+			if( xEvent::xdisplay isnot null ){
 				is_connected = true;
 			}else	is_connected = false;
 		}
@@ -77,43 +97,36 @@ static	bool	block_connection = false;
 	}
 
 	bool
-	xDisplay::close(){
-		if( xdisplay isnot null && connected() ){
-			XCloseDisplay(xdisplay);
+	xDisplay::disconnect(){
+		if( xEvent::xdisplay isnot null && connected() ){
+			XCloseDisplay(xEvent::xdisplay);
 		
-			xdisplay = nullptr;
+			xEvent::xdisplay = nullptr;
 			xscrn = -1;
 			is_connected = false;
 		}
 	return	!connected();
 	}
 
-	int
-	xDisplay::depth(){
-		if( !connected() )
-			return	0;
-		else	return	DefaultDepth(xdisplay,xscrn);
-	}
-
 	unsigned int
 	xDisplay::width(){
 		if( !connected() )
 			return	0;
-		else	return	DisplayWidth(xdisplay,xscrn);
+		else	return	DisplayWidth(xEvent::xdisplay,xscrn);
 	}
 
 	unsigned int
 	xDisplay::height(){
 		if( !connected() )
 			return	0;
-		else	return	DisplayHeight(xdisplay,xscrn);
+		else	return	DisplayHeight(xEvent::xdisplay,xscrn);
 	}
 
 	Screen *
 	xDisplay::screen(){
 		if( !connected() )
 			return	nullptr;
-		else	return	ScreenOfDisplay(xdisplay,xscrn);
+		else	return	ScreenOfDisplay(xEvent::xdisplay,xscrn);
 	}
 
 	int
@@ -123,23 +136,11 @@ static	bool	block_connection = false;
 		else	return	xscrn;
 	}
 
-	int
-	xDisplay::next_event(){
-		if( !connected() )
-			return	0;
-		else	return	XNextEvent(xdisplay, &xevent);
-	}
-
-	int
-	xDisplay::event_type(){
-		return	xevent.type;
-	}
-
 	Drawable
 	xDisplay::root(){
 		if( !connected() )
 			return	0;
-		else	return	RootWindow(xdisplay,xscrn);
+		else	return	RootWindow(xEvent::xdisplay,xscrn);
 	}
 
 }

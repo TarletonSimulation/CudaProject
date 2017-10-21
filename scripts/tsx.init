@@ -1,0 +1,34 @@
+#!/bin/bash
+
+. ~/tsx.env
+
+if [ ! -d "$TsimDir" ]
+then
+	mkdir $TsimDir
+fi
+
+pushd $TsimDir 1>&2 > ~/.dump
+
+if [ ! -d "$CudaProject" ]
+then
+	echo
+	git clone "$GitMain/`basename $TsimDir`/`basename $CudaProject`.git"
+	echo
+fi
+
+for x in $req_dirs $ign_dirs $sys_dirs
+do
+	if [ -d "$CudaProject/$x" ]
+	then	continue
+	else	mkdir "$CudaProject/$x"
+	fi
+done
+
+if [ ! -d "$CudaProject/tsx" ]
+then
+	ln -s "$CudaProject/include" "$CudaProject/tsx"
+fi
+
+popd 1>&2 > ~/.dump
+rm -f ~/.dump
+

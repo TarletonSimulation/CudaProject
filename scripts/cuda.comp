@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. ~/tsim.inc
+. ~/tsx.env
 
 tput reset
 
@@ -28,9 +28,9 @@ then
 		
 		name=`basename $x .cu`
 		printf	"Compiling Source: %16s\t" "$x"
-		$Comp $StdWarn -c src/$x -o $TsimDir/$CudaProject/sbin/${name}.o -I $TsimDir/$CudaProject $StdPkg
+		$Comp $StdWarn -c src/$x -o $CudaProject/sbin/${name}.o -I $CudaProject $StdPkg
 		
-		if [ -f $TsimDir/$CudaProject/sbin/${name}.o ]
+		if [ -f $CudaProject/sbin/${name}.o ]
 		then
 			echo "Success"
 		else	echo "Failure"
@@ -41,21 +41,21 @@ fi
 
 if test `find sbin -type f | grep .o | wc -l` -gt 0
 then
-	if [ -f $TsimDir/$CudaProject/lib/$LibTsimCuda ]
+	if [ -f $CudaProject/lib/$LibTsx ]
 	then
-		rm -f $TsimDir/$CudaProject/lib/$LibTsimCuda
+		rm -f $CudaProject/lib/$LibTsx
 	fi
 
-	ar cq $TsimDir/$CudaProject/lib/$LibTsimCuda $TsimDir/$CudaProject/sbin/*.o
+	ar cq $CudaProject/lib/$LibTsx $CudaProject/sbin/*.o
 	
-	if [ -f $TsimDir/$CudaProject/lib/$LibTsimCuda ]
+	if [ -f $CudaProject/lib/$LibTsx ]
 	then
 		echo "Cuda Library Built"
-		LibTsimCuda="$TsimDir/$CudaProject/lib/$LibTsimCuda"
-	else	LibTsimCuda=""
+		LibTsx="$CudaProject/lib/$LibTsx"
+	else	LibTsx=""
 	fi
 
-	rm -f $TsimDir/$CudaProject/sbin/*.o
+	rm -f $CudaProject/sbin/*.o
 
 fi
 
@@ -69,9 +69,9 @@ then
 
 		name=`basename $x .cu`
 		printf	"Compiling Program: %15s\t" "$x"
-		$Comp $StdWarn main/$x -o $TsimDir/$CudaProject/bin/$name $LibTsimCuda -I $TsimDir/$CudaProject $StdPkg
+		$Comp $StdWarn main/$x -o $CudaProject/bin/$name $LibTsx -I $CudaProject $StdPkg
 
-		if [ -f $TsimDir/$CudaProject/bin/$name ]
+		if [ -f $CudaProject/bin/$name ]
 		then
 			echo "Success"
 		else	echo "Failure"
