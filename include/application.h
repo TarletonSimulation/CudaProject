@@ -8,11 +8,13 @@
 namespace tsx{
 
 	class	xApp
-	:	protected xWidget,
+	:	public xWidget,
 		public xDisplay{
 		public:
 			 xApp(int, char **);
 			~xApp();
+
+		xWidget &	widget();
 
 			int	start();
 			int	stop();

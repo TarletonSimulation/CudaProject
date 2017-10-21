@@ -30,14 +30,20 @@ namespace tsx{
 		xattr_mask	= XWIN_ATTR_DEFAULT;
 		xsize_mask	= USPosition | USSize;
 
+		xevent_udm	= 0;
+		xattr_udm	= 0;
+		xsize_udm	= 0;
+
 		is_mapped	= false;
 		is_created	= false;
+		update_xattr	= false;
 
 		memset(&xwin_attr, 0, sizeof(xwin_attr));
 
 		xwin_attr.event_mask		= XEVT_BUTTON_PRESS_MASK | XEVT_KEY_PRESS_MASK | XEVT_WINDOW_MASK;
 		xwin_attr.border_pixel		= 0x000000;	// default values that can be changed by the programmer or user //
 		xwin_attr.background_pixel	= 0x000000;
+		xwin_attr.override_redirect	= false;
 
 		xwin_size_h	= XAllocSizeHints();
 		if( xwin_size_h is null ){
@@ -104,7 +110,15 @@ namespace tsx{
 			else	return	false;
 		}
 	}
-
+	
+	bool
+	xwidget_attr::needs_reattr(){
+		if( update_xattr is false )
+			return	false;
+	else	if( created() and showing() ){
+			return	true;
+		}else	return	false;
+	}
 	// end virtual methods //
 	
 	bool
@@ -315,24 +329,34 @@ namespace tsx{
 		if( c gt 0xffffff )
 			xwin_attr.border_pixel = 0xffffff;
 		else	xwin_attr.border_pixel = c;
+
+		if( created() is true ){
+			update_xattr = true;
+			xattr_udm |= XWIN_ATTR_BACKGROUND_PIXEL;
+		}
 	}
 
 	unsigned long
-	xwidget_attr::border_pixel(){
-		return	xwin_attr.border_pixel;
-	}
+	xwidget_attr::border_pixel()
+	{return	xwin_attr.border_pixel;}
 
 	void
 	xwidget_attr::background_pixel(unsigned long c){
 		if( c gt 0xffffff )
 			xwin_attr.background_pixel = 0xffffff;
 		else	xwin_attr.background_pixel = c;
+
+		if( created() is true ){
+			update_xattr = true;
+			xattr_udm |= XWIN_ATTR_BORDER_PIXEL;
+		}
 	}
 
 	unsigned long
 	xwidget_attr::background_pixel()
 	{return	xwin_attr.background_pixel;}
 
+	
 	bool
 	xwidget_attr::operator == ( const xwidget_attr & attr ){
 		if( xwidth != attr.xwidth )
@@ -347,7 +371,7 @@ namespace tsx{
 			return	false;
 	else	if( xattr_mask != attr.xattr_mask )
 			return	false;
-	else	if( xgeom_mask != attr.xgeom_mask )
+	else	if( xsize_mask != attr.xsize_mask )
 			return	false;
 	else	if( xclass != attr.xclass )
 			return	false;
@@ -356,8 +380,6 @@ namespace tsx{
 	else	if( is_mapped != attr.is_mapped )
 			return	false;
 	else	if( is_created != attr.is_created )
-			return	false;
-	else	if( xsize_mask != attr.xsize_mask )
 			return	false;
 	else	if( tsx_mask != attr.tsx_mask )
 			return	false;
@@ -426,15 +448,24 @@ namespace tsx{
 
 		Parent.child_list.push_back(child);
 
+		child->background_pixel(0x0);
+		child->border_pixel(0x0);
+		child->xborder_width = 1;
+
 		child->xwindow	= XCreateWindow(
-			Parent.xdisplay->display(), Parent.xwindow,
+			Parent.xdisplay->display(), Parent.drawable(),
 			child->x(), child->y(), child->width(), child->height(),
 			child->xborder_width, child->depth(), child->xwidget_attr::xclass,
 			child->xdisplay->visual(), child->xwidget_attr::xattr_mask,
 			&(child->xwidget_attr::xwin_attr)
 		);
+		
+		if( child->drawable() gt 0 )
+			child->xwidget_attr::is_created = true;
+		else	child->xwidget_attr::is_created = false;
 
-		child->xwidget_attr::is_created = true;
+		child->xwidget_attr::is_mapped = false;
+		child->xwidget_attr::update_xattr = true;
 
 	return	*child;
 	}
@@ -444,12 +475,38 @@ namespace tsx{
 		return	create(*this,W,H,X,Y);
 	}
 
+	void
+	xWidget::background_pixel(unsigned long	bp){
+		xwidget_attr::background_pixel(bp);
+		if( xdisplay is null )
+			return;
+		if( created() is true and showing() is true ){
+			XSetWindowBackground(
+				xdisplay->display(), drawable(),
+				xwidget_attr::background_pixel()
+			);
+		}
+	}
+
+	void
+	xWidget::border_pixel(unsigned long bp){
+		xwidget_attr::border_pixel(bp);
+		if( xdisplay is null )
+			return;
+		if( created() is true and showing() is true ){
+			XSetWindowBorder(
+				xdisplay->display(), drawable(),
+				xwidget_attr::border_pixel()
+			);
+		}
+	}
+
 	bool
 	xWidget::show(){
 		if( xdisplay is null )
 			return	false;
-	else	if( xwindow isnot 0 and !xwidget_attr::showing() ){
-			int mw = XMapWindow( xdisplay->display(), xwindow );
+	else	if( xwindow isnot 0 and !xwidget_attr::showing() and xwidget_attr::created() ){
+			int mw = XMapWindow( xdisplay->display(), drawable() );
 			if( mw is 1 ){
 				xwidget_attr::is_mapped = true;
 				return	true;
@@ -502,6 +559,22 @@ namespace tsx{
 
 		widget_is_app = true;
 	return	true;
+	}
+
+	bool
+	xWidget::update_widget(){
+		if( xdisplay is null )
+			return	false;
+	else	if( !created() or !showing() )
+			return	false;
+	else	if( xwidget_attr::needs_reattr() is false )
+			return	false;
+		else{
+			XChangeWindowAttributes(xdisplay->display(), drawable(), xwidget_attr::xattr_udm, &(xwidget_attr::xwin_attr));
+
+			xwidget_attr::update_xattr = false;
+			xwidget_attr::xattr_udm = 0;
+		}
 	}
 
 

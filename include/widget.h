@@ -48,10 +48,10 @@ namespace tsx{
 
 		unsigned int	pixel_area();		// returns width*height of pixels //
 			
-			void	background_pixel(unsigned long);	// sets background pixel for xwin_attr //
+virtual			void	background_pixel(unsigned long);	// sets background pixel for xwin_attr //
 		unsigned long	background_pixel();			// gets background pixel //
 
-			void	border_pixel(unsigned long);	// sets border pixel //
+virtual			void	border_pixel(unsigned long);	// sets border pixel //
 		unsigned long	border_pixel();			// gets ... //
 
 		unsigned int	border_width();
@@ -65,6 +65,7 @@ namespace tsx{
 
 virtual			bool	needs_resize();
 virtual			bool	needs_repos();
+virtual			bool	needs_reattr();
 
 			bool	operator	== ( const xwidget_attr & );
 			bool	operator	!= ( const xwidget_attr & );
@@ -83,7 +84,10 @@ virtual			bool	needs_repos();
 
 			long	xevent_mask;		// widnow event mask // used with window creation //
 			long	xattr_mask;		// window attribute mask // for window attributes //
-			long	xgeom_mask;		// window geometry mask // for size hints //
+
+			long	xattr_udm;		// update mask //
+			long	xevent_udm;		//
+			long	xsize_udm;		//
 
 			bool	is_mapped;		// mapped boolean //
 			bool	is_created;		// created boolean //
@@ -94,6 +98,8 @@ virtual			bool	needs_repos();
 
 		unsigned int	xborder_width;
 			int	xdepth;
+
+			bool	update_xattr;		// update needed for window attributes //
 
 			long	tsx_mask;		// for use in local library functions //
 		
@@ -125,6 +131,9 @@ virtual			bool	needs_repos();
 
 		unsigned int		child_count();	// returns sub window count // of current window //
 		WidgetList		children();
+			
+			void		background_pixel(unsigned long)	override;
+			void		border_pixel(unsigned long)	override;
 
 			int		wid();
 			XID		xid();
@@ -134,6 +143,7 @@ virtual			bool	needs_repos();
 			xWidget	&	spawn(unsigned int, unsigned int, int, int);
 		static	xWidget	&	create(xWidget &, unsigned int, unsigned int, int, int);
 		// end virtual functions //
+		virtual	bool		update_widget();
 
 		protected:
 			bool		create_root(xDisplay *);

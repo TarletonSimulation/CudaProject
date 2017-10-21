@@ -17,15 +17,18 @@ namespace tsx{
 
 		xWidget::create_root( (xDisplay *)this );
 
+		xWidget::depth( xDisplay::depth() );
+
 		xWidget::xwindow = XCreateWindow(
 			xDisplay::display(), xWidget::w_parent->drawable(),
 			xWidget::x(), xWidget::y(), xWidget::width(), xWidget::height(),
-			xWidget::xwidget_attr::border_width(), xWidget::xwidget_attr::depth(),
+			xWidget::xwidget_attr::border_width(), xWidget::depth(),
 			xWidget::xwidget_attr::xclass, xDisplay::visual(),
 			xWidget::xwidget_attr::xattr_mask, &(xWidget::xwidget_attr::xwin_attr)
 		);
 
 		xWidget::xwidget_attr::is_created = true;
+		xWidget::xwidget_attr::is_mapped = false;
 		
 	}
 
@@ -48,6 +51,11 @@ namespace tsx{
 		xDisplay::disconnect();
 	}
 
+	xWidget &
+	xApp::widget(){
+		return	(xWidget &)*this;
+	}
+
 	int
 	xApp::start(){
 		if( !created() ){
@@ -61,7 +69,7 @@ namespace tsx{
 			return	0;
 		else	looped = true;
 
-		if( xWidget::xwidget_attr::created() ){
+		if( xWidget::xwidget_attr::created() and xWidget::xwidget_attr::showing() ){
 			if( xWidget::xwidget_attr::needs_resize() ){
 				XResizeWindow( xDisplay::display(), xWidget::drawable(), xWidget::width(), xWidget::height() );
 			}
@@ -69,6 +77,8 @@ namespace tsx{
 			if( xWidget::xwidget_attr::needs_repos() ){
 				XMoveWindow( xDisplay::display(), xWidget::drawable(), xWidget::x(), xWidget::y() );
 			}
+
+			XFlush(xDisplay::display());
 		}
 		return	running();
 	}
@@ -78,7 +88,7 @@ namespace tsx{
 		if( !looped )
 			return	0;
 		else	looped = false;
-		return	!running();
+		return	(running() is false);
 	}
 
 	bool
