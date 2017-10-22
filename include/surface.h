@@ -8,7 +8,7 @@
 namespace tsx{
 
 	class	glxSurface
-	:	public	xWidget{
+	:	public	Widget{
 		public:
 			 glxSurface();
 			~glxSurface();

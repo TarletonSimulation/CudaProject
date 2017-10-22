@@ -15,10 +15,10 @@ extern "C"{
 
 namespace tsx{
 	
-	class	xEvent{
+	class	Event{
 		public:
-			 xEvent();
-			~xEvent();
+			 Event();
+			~Event();
 			
 			int	type();
 			int	next();

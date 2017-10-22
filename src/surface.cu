@@ -3,7 +3,7 @@
 namespace tsx{
 
 	glxSurface::glxSurface()
-	:	xWidget(){
+	:	Widget(){
 		xvisual_info	= nullptr;
 		glx_fbconfig	= nullptr;
 	}

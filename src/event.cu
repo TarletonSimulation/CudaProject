@@ -2,29 +2,29 @@
 
 namespace tsx{
 
-	xEvent::xEvent(){
+	Event::Event(){
 		xdisplay = nullptr;
 		memset(&xevent, 0, sizeof(xevent));
 	}
 	
-	xEvent::~xEvent(){
+	Event::~Event(){
 		xdisplay = nullptr;
 	}
 
 
 	int
-	xEvent::type()
+	Event::type()
 	{return	xevent.type;}
 
 	int
-	xEvent::next(){
+	Event::next(){
 		if( xdisplay is null )
 			return	0;
 		return	XNextEvent(xdisplay,&xevent);
 	}
 
 	int
-	xEvent::pending(){
+	Event::pending(){
 		if( xdisplay is null )
 			return	0;
 		else	return	XPending(xdisplay);

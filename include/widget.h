@@ -12,11 +12,11 @@
 
 namespace tsx{
 
-	class	xwidget_attr{
+	class	widget_attr{
 		public:
-			 xwidget_attr();
-			 xwidget_attr(unsigned int, unsigned int, int, int);
-			~xwidget_attr();
+			 widget_attr();
+			 widget_attr(unsigned int, unsigned int, int, int);
+			~widget_attr();
 
 			bool	check_event(unsigned long);	// checks for a particular event in mask //
 			bool	set_event(unsigned long);	// sets event mask //
@@ -71,10 +71,10 @@ virtual			bool	needs_resize();
 virtual			bool	needs_repos();
 virtual			bool	needs_reattr();
 
-			bool	operator	== ( const xwidget_attr & );
-			bool	operator	!= ( const xwidget_attr & );
+			bool	operator	== ( const widget_attr & );
+			bool	operator	!= ( const widget_attr & );
 
-	const	xwidget_attr &	operator	 = ( const xwidget_attr & );
+	const	widget_attr &	operator	 = ( const widget_attr & );
 			
 		protected:
 			// used for current values //
@@ -118,11 +118,11 @@ virtual			bool	needs_reattr();
 	};
 
 
-	class	xWidget
-	:	public	xwidget_attr{
+	class	Widget
+	:	public	widget_attr{
 		public:
-			 xWidget();
-			~xWidget();
+			 Widget();
+			~Widget();
 	typedef	int	(*Action)(void *, void *);
 			
 			bool		show();		// shows self and all children //
@@ -140,8 +140,8 @@ virtual			bool	needs_reattr();
 			int		cid();
 
 		// virtual functions //
-			xWidget	&	spawn(unsigned int, unsigned int, int, int);
-		static	xWidget	&	create(xWidget &, unsigned int, unsigned int, int, int);
+			Widget	&	spawn(unsigned int, unsigned int, int, int);
+		static	Widget	&	create(Widget &, unsigned int, unsigned int, int, int);
 		// end virtual functions //
 		virtual	bool		update_widget();
 		protected:
@@ -149,8 +149,8 @@ virtual			bool	needs_reattr();
 			bool		create_root(xDisplay *);
 			bool		widget_is_app;
 
-			xWidget	*	w_parent;	// widget parent //
-			xDisplay *	xdisplay;
+			Widget	*	w_parent;	// widget parent //
+			xDisplay *	xdisplay;	// tsx display class pointer // from the app //
 
 			Drawable	xwindow;
 			Pixmap		xpixmap;

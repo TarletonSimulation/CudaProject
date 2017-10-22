@@ -11,9 +11,9 @@ void	cuda_main(){
 
 int main(int argc, char ** argv){
 	
-	tsx::xApp	app(argc, argv);
-	tsx::xWidget	child1 = app.spawn(50,25, 5,5);
-	tsx::xWidget	child2 = app.spawn(50,25, 5,35);
+	tsx::App	app(argc, argv);
+	tsx::Widget	child1 = app.spawn(50,25, 5,5);
+	tsx::Widget	child2 = app.spawn(50,25, 5,35);
 
 	app.width(500);
 	app.height(500);

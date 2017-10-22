@@ -7,14 +7,14 @@
 
 namespace tsx{
 
-	struct	xApp
-	:	public xWidget,
+	struct	App
+	:	public Widget,
 		public xDisplay{
 		public:
-			 xApp(int, char **);
-			~xApp();
+			 App(int, char **);
+			~App();
 
-		xWidget &	widget();
+		Widget &	widget();
 
 			int	start();
 			int	stop();

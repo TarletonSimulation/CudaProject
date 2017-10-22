@@ -2,7 +2,7 @@
 
 namespace tsx{
 
-	xApp::xApp(int Argc, char ** Argv)
+	App::App(int Argc, char ** Argv)
 	: xDisplay("DISPLAY"), looped(false)
 	{
 		argv = new std::string [Argc];
@@ -15,67 +15,67 @@ namespace tsx{
 			exit(1);
 		}
 
-		xWidget::create_root( (xDisplay *)this );
+		Widget::create_root( (xDisplay *)this );
 
-		xWidget::depth( xDisplay::depth() );
+		Widget::depth( xDisplay::depth() );
 
-		xWidget::xwindow = XCreateWindow(
-			xDisplay::display(), xWidget::w_parent->drawable(),
-			xWidget::x(), xWidget::y(), xWidget::width(), xWidget::height(),
-			xWidget::xwidget_attr::border_width(), xWidget::depth(),
-			xWidget::xwidget_attr::xclass, xDisplay::visual(),
-			xWidget::xwidget_attr::xattr_mask, &(xWidget::xwidget_attr::xwin_attr)
+		Widget::xwindow = XCreateWindow(
+			xDisplay::display(), Widget::w_parent->drawable(),
+			Widget::x(), Widget::y(), Widget::width(), Widget::height(),
+			Widget::widget_attr::border_width(), Widget::depth(),
+			Widget::widget_attr::xclass, xDisplay::visual(),
+			Widget::widget_attr::xattr_mask, &(Widget::widget_attr::xwin_attr)
 		);
 
-		xWidget::xwidget_attr::is_created = true;
-		xWidget::xwidget_attr::is_mapped = false;
+		Widget::widget_attr::is_created = true;
+		Widget::widget_attr::is_mapped = false;
 		
 	}
 
-	xApp::~xApp(){
+	App::~App(){
 		if( xDisplay::connected() ){
 			xDisplay::disconnect();
 			if(xDisplay::connected() is false)
 				std::cout << "No longer connected to XServer" << std::endl;
 		}
 
-		delete xWidget::w_parent;
-		xWidget::w_parent = nullptr;
+		delete Widget::w_parent;
+		Widget::w_parent = nullptr;
 	}
 
 	bool
-	xApp::destroy(){
+	App::destroy(){
 		if( running() )
 			stop();
-		xWidget::destroy();
+		Widget::destroy();
 		xDisplay::disconnect();
 	}
 
-	xWidget &
-	xApp::widget(){
-		return	(xWidget &)*this;
+	Widget &
+	App::widget(){
+		return	(Widget &)*this;
 	}
 
 	int
-	xApp::start(){
+	App::start(){
 		if( !created() ){
 			std::cout << "window not created" << std::endl;
 			return	false;
 		}
 
-		xWidget::show();
+		Widget::show();
 
 		if( looped )
 			return	0;
 		else	looped = true;
 
-		if( xWidget::xwidget_attr::created() and xWidget::xwidget_attr::showing() ){
-			if( xWidget::xwidget_attr::needs_resize() ){
-				XResizeWindow( xDisplay::display(), xWidget::drawable(), xWidget::width(), xWidget::height() );
+		if( Widget::widget_attr::created() and Widget::widget_attr::showing() ){
+			if( Widget::widget_attr::needs_resize() ){
+				XResizeWindow( xDisplay::display(), Widget::drawable(), Widget::width(), Widget::height() );
 			}
 
-			if( xWidget::xwidget_attr::needs_repos() ){
-				XMoveWindow( xDisplay::display(), xWidget::drawable(), xWidget::x(), xWidget::y() );
+			if( Widget::widget_attr::needs_repos() ){
+				XMoveWindow( xDisplay::display(), Widget::drawable(), Widget::x(), Widget::y() );
 			}
 
 			XFlush(xDisplay::display());
@@ -84,7 +84,7 @@ namespace tsx{
 	}
 
 	int
-	xApp::stop(){
+	App::stop(){
 		if( !looped )
 			return	0;
 		else	looped = false;
@@ -92,59 +92,59 @@ namespace tsx{
 	}
 
 	bool
-	xApp::running(){
+	App::running(){
 		return	looped;
 	}
 
 	void
-	xApp::width(unsigned int w){
-		xWidget::xwidget_attr::width(w);
+	App::width(unsigned int w){
+		Widget::widget_attr::width(w);
 	}
 
 	unsigned int
-	xApp::width()
-	{return	xWidget::xwidget_attr::width();}
+	App::width()
+	{return	Widget::widget_attr::width();}
 
 	void
-	xApp::height(unsigned int h){
-		xWidget::xwidget_attr::height(h);
+	App::height(unsigned int h){
+		Widget::widget_attr::height(h);
 	}
 
 	unsigned int
-	xApp::height()
-	{return	xWidget::xwidget_attr::height();}
+	App::height()
+	{return	Widget::widget_attr::height();}
 
 	int
-	xApp::next_event()
-	{return	xDisplay::xEvent::next();}
+	App::next_event()
+	{return	xDisplay::Event::next();}
 
 	int
-	xApp::event_type()
-	{return	xDisplay::xEvent::type();}
+	App::event_type()
+	{return	xDisplay::Event::type();}
 
 	void
-	xApp::x(int X){
-		xWidget::x(X);
+	App::x(int X){
+		Widget::x(X);
 	}
 
 	int
-	xApp::x()
-	{return	xWidget::x();}
+	App::x()
+	{return	Widget::x();}
 
 	void
-	xApp::y(int Y)
-	{xWidget::y(Y);}
+	App::y(int Y)
+	{Widget::y(Y);}
 
 	int
-	xApp::y()
-	{return	xWidget::y();}
+	App::y()
+	{return	Widget::y();}
 
 	Drawable
-	xApp::event_window()
-	{return	xDisplay::xEvent::xevent.xany.window;}
+	App::event_window()
+	{return	xDisplay::Event::xevent.xany.window;}
 
 	void
-	xApp::flush(){
+	App::flush(){
 		if( xDisplay::connected() ){
 			XFlush(xDisplay::display());
 		}

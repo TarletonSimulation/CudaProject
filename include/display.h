@@ -7,7 +7,7 @@
 namespace tsx{
 	
 	class	xDisplay
-	:	public	xEvent{
+	:	public	Event{
 		public:
 			 xDisplay(std::string ="DISPLAY");
 			~xDisplay();
@@ -31,7 +31,7 @@ namespace tsx{
 			int		scrn_n();	// screen number //
 
 			Drawable	root();		// xserver root window //
-			Display	*	display();	// return display pointer //
+			Display *	display();	// return display pointer //
 
 			Visual	*	visual();	// default visual //
 			GC		gc();		// default gc //
