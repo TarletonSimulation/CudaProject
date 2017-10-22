@@ -35,10 +35,15 @@ namespace tsx{
 
 			int	next_event();
 			int	event_type();
+		Drawable	event_window();
+			
+			void	flush();
 
-//		protected:
+		protected:
 			int	argc;
 		std::string *	argv;
+			
+			pid_t	proc_id;
 			
 			bool	looped;	// main loop value //
 	};

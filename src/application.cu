@@ -138,5 +138,16 @@ namespace tsx{
 	int
 	xApp::y()
 	{return	xWidget::y();}
+
+	Drawable
+	xApp::event_window()
+	{return	xDisplay::xEvent::xevent.xany.window;}
+
+	void
+	xApp::flush(){
+		if( xDisplay::connected() ){
+			XFlush(xDisplay::display());
+		}
+	}
 }
 

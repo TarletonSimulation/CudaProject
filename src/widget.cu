@@ -24,7 +24,7 @@ namespace tsx{
 		tsx_mask	= 0;
 		xgroup		= 0;
 		xdepth		= 24;
-		xborder_width	= 1;
+		xborder_width	= 4;
 		
 		xevent_mask	= XEVT_DEFAULT_WINDOW_MASK;
 		xattr_mask	= XWIN_ATTR_DEFAULT;
@@ -334,7 +334,7 @@ namespace tsx{
 
 		if( created() is true ){
 			update_xattr = true;
-			xattr_udm |= XWIN_ATTR_BACKGROUND_PIXEL;
+//			xattr_udm |= XWIN_ATTR_BACKGROUND_PIXEL;
 		}
 	}
 
@@ -350,7 +350,7 @@ namespace tsx{
 
 		if( created() is true ){
 			update_xattr = true;
-			xattr_udm |= XWIN_ATTR_BORDER_PIXEL;
+//			xattr_udm |= XWIN_ATTR_BORDER_PIXEL;
 		}
 	}
 
@@ -391,7 +391,7 @@ namespace tsx{
 
 	bool
 	xwidget_attr::operator != ( const xwidget_attr & attr ){
-		return	!(*this == attr);
+		return	((*this == attr) is false);
 	}
 
 
@@ -401,7 +401,8 @@ namespace tsx{
 
 
 
-	xWidget::xWidget(){
+	xWidget::xWidget()
+	:	xwidget_attr(){
 		xdisplay	= nullptr;
 		w_parent	= nullptr;
 
@@ -494,7 +495,7 @@ namespace tsx{
 	xWidget::show(){
 		if( xdisplay is null )
 			return	false;
-	else	if( xwindow isnot 0 and !xwidget_attr::showing() and xwidget_attr::created() ){
+	else	if( xwindow isnot 0 and xwidget_attr::showing() is false and xwidget_attr::created() is true ){
 			int mw = XMapWindow( xdisplay->display(), drawable() );
 			if( mw is 1 ){
 				xwidget_attr::is_mapped = true;
@@ -508,9 +509,9 @@ namespace tsx{
 	xWidget::hide(){
 		if( xdisplay is null )
 			return	false;
-		if( !xwidget_attr::created() )
+		if( xwidget_attr::created() is false )
 			return	false;
-		if( !xwidget_attr::showing() )
+		if( xwidget_attr::showing() is false )
 			return	false;
 
 		int uw = XUnmapWindow( xdisplay->display(), xwindow );
@@ -523,7 +524,7 @@ namespace tsx{
 	xWidget::destroy(){
 		if( xdisplay is null )
 			return	false;
-		if( !xwidget_attr::created() )
+		if( xwidget_attr::created() is false )
 			return	false;
 
 		int dw = XDestroyWindow( xdisplay->display(), xwindow );
@@ -554,12 +555,12 @@ namespace tsx{
 	xWidget::update_widget(){
 		if( xdisplay is null )
 			return	false;
-	else	if( !created() or !showing() )
+	else	if( created() is false or showing() is false )
 			return	false;
 	else	if( xwidget_attr::needs_reattr() is false )
 			return	false;
 		else{
-			XChangeWindowAttributes(xdisplay->display(), drawable(), xwidget_attr::xattr_udm, &(xwidget_attr::xwin_attr));
+			XChangeWindowAttributes(xdisplay->display(), drawable(), xwidget_attr::xattr_mask, &(xwidget_attr::xwin_attr));
 
 			xwidget_attr::update_xattr = false;
 			xwidget_attr::xattr_udm = 0;

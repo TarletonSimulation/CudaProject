@@ -1,6 +1,10 @@
 #if	!defined( __tsx_widget__ )
 #	 define	  __tsx_widget__
 
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glx.h>
+
 #include <tsx/prefix.h>
 #include <tsx/display.h>
 
@@ -150,11 +154,6 @@ virtual			bool	needs_reattr();
 
 			Drawable	xwindow;
 			Pixmap		xpixmap;
-			XVisualInfo *	xvisual_info;
-			Visual	*	xvisual;
-			GC		xgc;
-
-			Colormap	xcolor_map;
 	};
 }
 
