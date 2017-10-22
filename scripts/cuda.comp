@@ -30,7 +30,7 @@ then
 		
 		name=`basename $x .cu`
 		printf	"Compiling Source: %16s\t" "$x"
-		$Comp $StdWarn -c src/$x -o $CudaProject/sbin/${name}.o -I $CudaProject $StdPkg
+		$Comp $StdWarn -dc src/$x -o $CudaProject/sbin/${name}.o -I $CudaProject $StdPkg
 		
 		if [ -f sbin/${name}.o ]
 		then
@@ -71,7 +71,7 @@ then
 
 		name=`basename $x .cu`
 		printf	"Compiling Program: %15s\t" "$x"
-		$Comp $StdWarn main/$x -o bin/$name $LibTsx -I $CudaProject $StdPkg
+		$Comp $StdWarn -rdc=true main/$x -o bin/$name $LibTsx -I $CudaProject $StdPkg
 
 		if [ -f bin/$name ]
 		then

@@ -71,6 +71,7 @@ virtual			bool	needs_reattr();
 			bool	operator	!= ( const xwidget_attr & );
 
 	const	xwidget_attr &	operator	 = ( const xwidget_attr & );
+			
 		protected:
 			// used for current values //
 			unsigned int	xwidth, xheight;
@@ -98,16 +99,15 @@ virtual			bool	needs_reattr();
 
 		unsigned int	xborder_width;
 			int	xdepth;
-
 			bool	update_xattr;		// update needed for window attributes //
 
 			long	tsx_mask;		// for use in local library functions //
 		
-			// xlib structures //
+			// xlib classures //
 		XSetWindowAttributes	xwin_attr;	// Xlib settable window attributes //
 			XID	xgroup;
 			
-			// use XFree to free data structures //
+			// use XFree to free data classures //
 		XSizeHints	*	xwin_size_h;	// xwindow size hints //
 		XWMHints	*	xwin_wm_h;	// window manager hints //
 		XClassHint	*	xwin_class_h;	// window class hint //
@@ -119,7 +119,6 @@ virtual			bool	needs_reattr();
 		public:
 			 xWidget();
 			~xWidget();
-	typedef	std::list<xWidget *>	WidgetList;
 	typedef	int	(*Action)(void *, void *);
 			
 			bool		show();		// shows self and all children //
@@ -129,9 +128,6 @@ virtual			bool	needs_reattr();
 			Drawable	drawable();	// xlib window value //
 			Pixmap		pixmap();	// xlib pixmap //
 
-		unsigned int		child_count();	// returns sub window count // of current window //
-		WidgetList		children();
-			
 			void		background_pixel(unsigned long)	override;
 			void		border_pixel(unsigned long)	override;
 
@@ -144,8 +140,8 @@ virtual			bool	needs_reattr();
 		static	xWidget	&	create(xWidget &, unsigned int, unsigned int, int, int);
 		// end virtual functions //
 		virtual	bool		update_widget();
-
 		protected:
+
 			bool		create_root(xDisplay *);
 			bool		widget_is_app;
 
@@ -154,10 +150,11 @@ virtual			bool	needs_reattr();
 
 			Drawable	xwindow;
 			Pixmap		xpixmap;
+			XVisualInfo *	xvisual_info;
 			Visual	*	xvisual;
 			GC		xgc;
 
-			WidgetList	child_list;
+			Colormap	xcolor_map;
 	};
 }
 

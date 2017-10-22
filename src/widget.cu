@@ -34,6 +34,8 @@ namespace tsx{
 		xattr_udm	= 0;
 		xsize_udm	= 0;
 
+		xclass		= InputOutput;
+
 		is_mapped	= false;
 		is_created	= false;
 		update_xattr	= false;
@@ -408,17 +410,6 @@ namespace tsx{
 	}
 
 	xWidget::~xWidget(){
-		if( child_list.size() gt 0 ){
-			for(
-				WidgetList::iterator child = child_list.begin();
-				child != child_list.end(); ++child
-			){
-				if( *child isnot null ){
-					child = child_list.erase(child);
-				}
-			}
-		}
-
 		xdisplay = nullptr;
 	}
 
@@ -445,8 +436,6 @@ namespace tsx{
 
 		child->w_parent = &Parent;
 		child->xdisplay = Parent.xdisplay;
-
-		Parent.child_list.push_back(child);
 
 		child->background_pixel(0x0);
 		child->border_pixel(0x0);

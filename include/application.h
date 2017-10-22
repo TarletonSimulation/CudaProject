@@ -7,7 +7,7 @@
 
 namespace tsx{
 
-	class	xApp
+	struct	xApp
 	:	public xWidget,
 		public xDisplay{
 		public:
@@ -36,7 +36,7 @@ namespace tsx{
 			int	next_event();
 			int	event_type();
 
-		protected:
+//		protected:
 			int	argc;
 		std::string *	argv;
 			
