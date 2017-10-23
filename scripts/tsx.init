@@ -5,6 +5,8 @@ then
 	mkdir $TsimDir
 fi
 
+CudaProject="$TsimDir/CudaProject"
+
 pushd $TsimDir 1>&2 > ~/.dump
 
 if [ ! -d "$CudaProject" ]
