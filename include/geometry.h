@@ -10,39 +10,54 @@ namespace tsx{
 	class	Rectangle{
 		public:
 				 Rectangle();
-				 Rectangle(uint, uint);
+				 Rectangle(float, float);
 				 Rectangle(const Rectangle &);
 				~Rectangle();
 	
 	// commonly used names // for lists and such //
-	static	Rectangle	create(uint, uint);
+	static	Rectangle	create(float, float);
 	static	Rectangle	create(const Rectangle &);
-	static	Rectangle *	create_pointer(uint, uint);
+	static	Rectangle *	create_pointer(float, float);
 	static	Rectangle *	create_pointer(const Rectangle &);
 
-friend	const	Rectangle &	add(const Rectangle &, const Rectangle &);
+friend		void		set(Rectangle &, float W, float H);
+friend		void		set(Rectangle &, const Rectangle &);
+
+static		float		area(const Rectangle &);
+static		float		width(const Rectangle &);
+static		float		height(const Rectangle &);
+
+static		bool		width_locked(const Rectangle &);
+static		bool		height_locked(const Rectangle &);
+
+friend		Rectangle	add(const Rectangle &, const Rectangle &);
 friend	const	Rectangle &	add_to(Rectangle &, const Rectangle &);
 
-friend	const	Rectangle &	sub(Rectangle &, const Rectangle &);
+friend		Rectangle 	sub(const Rectangle &, const Rectangle &);
 friend	const	Rectangle &	sub_from(Rectangle &, const Rectangle &);
 
-friend	const	Rectangle &	scale(Rectangle &, float);			// floating point because it can be scaled downward //
-friend	const	Rectangle &	scale_width(Rectangle &, float);
-friend	const	Rectangle &	scale_height(Rectangle &, float);
+friend		void		scale(Rectangle &, float);			// floating point because it can be scaled downward //
+friend		void		scale_width(Rectangle &, float);
+friend		void		scale_height(Rectangle &, float);
 
-// final parameters are for shared objects // min_ptr, max_ptr, iter_ptr are shared //
-friend	bool			copy(Rectangle &, const Rectangle &, bool =false, bool =false, bool =false);
+			void	width(float);
+			float	width()			const;
+			void	lock_width(bool =true);
+			bool	width_locked()		const;
 
-			void	width(uint);
-			uint	width()			const;
+			void	height(float);
+			float	height()		const;
+			void	lock_height(bool =true);
+			bool	height_locked()		const;
 
-			void	height(uint);
-			uint	height()		const;
+			float	area()			const;
 
-			uint	area()			const;
-
-			void	rectangle(uint, uint);
+			void	rectangle(float, float);
 			void	rectangle(const Rectangle &);
+
+			void	scale(float);
+			void	scale_width(float);
+			void	scale_height(float);
 
 		// future inheritance methods //
 		// return copies of values //
@@ -54,11 +69,6 @@ friend	bool			copy(Rectangle &, const Rectangle &, bool =false, bool =false, boo
 		// reference returns // becuase c++... //
 		Rectangle &	rectangle_ref();
 			
-			bool	has_limits()		const;
-			bool	has_max()		const;
-			bool	has_min()		const;
-
-
 		bool 		operator	== ( const Rectangle & );
 		bool 		operator	!= ( const Rectangle & );
 	const	Rectangle &	operator	+= ( const Rectangle & );
@@ -66,31 +76,12 @@ friend	bool			copy(Rectangle &, const Rectangle &, bool =false, bool =false, boo
 	const	Rectangle &	operator	 = ( const Rectangle & );
 	const	Rectangle &	operator	 + ( const Rectangle & );
 	const	Rectangle &	operator	 - ( const Rectangle & );
+	const	Rectangle &	operator	 * ( float );
 
 		protected:
-			uint	w, h;		// width height //
-			bool	limit_block;
-
-		private:
-			void	init_limits();
-			void	init_max();
-			void	init_min();
-
-			void	remove_max();
-			void	remove_min();
-			void	remove_limits();
-
-			struct limits{
-				struct max{
-					uint * width, * height;
-					bool	is_sharing;
-				};
-
-				struct min{
-					uint * width, * height;
-					bool	is_sharing;
-				}min;
-			};
+			float	w, h;		// width height //
+			bool	w_lock;
+			bool	h_lock;
 	};
 
 
