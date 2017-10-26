@@ -121,12 +121,12 @@ namespace	tsx{
 	}
 
 	Rectangle *
-	Rectangle::create_pointer(float W, float H){
+	Rectangle::create_address(float W, float H){
 		return	new Rectangle(W,H);
 	}
 
 	Rectangle *
-	Rectangle::create_pointer(const Rectangle & rect){
+	Rectangle::create_address(const Rectangle & rect){
 		return	new Rectangle(rect);
 	}
 
@@ -224,7 +224,7 @@ namespace	tsx{
 	const{return	*this;}
 
 	Rectangle *
-	Rectangle::rectangle_pointer()
+	Rectangle::rectangle_address()
 	{return	this;}
 
 	Rectangle &
@@ -251,6 +251,15 @@ namespace	tsx{
 	Rectangle::scale_height(float x){
 		if( h_lock is false )
 			h *= x;
+	}
+
+	float
+	Rectangle::perimeter()
+	const{return 2*(w+h);}
+
+	float
+	Rectangle::magnitude(){
+		return	sqrtf( area() );
 	}
 
 
@@ -299,7 +308,154 @@ namespace	tsx{
 		scale(x);
 	}
 
+	// private methods //
+	
+	bool
+	Point::can_set_x()
+	const{
+		if( point_locked() is true )
+			return	false;
+	else	if( (ly is true) or (lz is true) )
+			return	false;
+		else	return	true;
+	}
+
+	bool
+	Point::can_set_y()
+	const{
+		if( point_locked() is true )
+			return	false;
+	else	if( (lx is true) or (lz is true) )
+			return	false;
+		else	return	true;
+	}
+
+	bool
+	Point::can_set_z()
+	const{
+		if( point_locked() is true )
+			return	false;
+	else	if( (ly is true) or (lx is true) )
+			return	false;
+		else	return	true;
+	}
+
+	// end private //
+
+
+	Point::Point()
+	: px(0.0f), py(0.0f), pz(0.0f){
+		lx = ly = lz = false;
+	}
+
+	Point::Point(float X, float Y, float Z)
+	: px(X), py(Y), pz(Z){
+		lx = ly = lz = false;
+	}
+
+	Point::~Point(){}
+	
+	bool
+	Point::point_locked()
+	const{return ( (lx is true) and (ly is true) and (lz is true) );}
+
+	void
+	Point::lock_point(bool lock){
+		lx = ly = lz = lock;
+	}
+
+	float
+	Point::x()
+	const{return px;}
+
+	void
+	Point::x(float nx){
+		if( can_set_x() is true )
+			px = nx;
+	}
+
+	void
+	Point::y(float ny){
+		if( can_set_y() is true )
+			py = ny;
+	}
+
+	void
+	Point::z(float nz){
+		if( can_set_z() is true )
+			pz = nz;
+	}
+
+	float
+	Point::y()
+	const{return py;}
+
+	float
+	Point::z()
+	const{return pz;}
+
+	float
+	Point::distance(float a, float b, float c)
+	const{
+		float	dx = x() - a;
+		float	dy = y() - b;
+		float	dz = z() - c;
+
+		float	sx = dx*dx;
+		float	sy = dy*dy;
+		float	sz = dz*dz;
+
+	return	sqrtf(sx+sy+sz);
+	}
+
+	float
+	Point::distance( const Point & at )
+	const{
+		return	distance( at.x(), at.y(), at.z() );
+	}
+
+	float
+	Point::magnitude()
+	const{
+		return	distance(0.0f, 0.0f, 0.0f);
+	}
+
+
+	bool
+	Point::x_locked()
+	const{return lx;}
+
+	bool
+	Point::y_locked()
+	const{return ly;}
+
+	bool
+	Point::z_locked()
+	const{return lz;}
+
+
+	void
+	Point::lock_x(bool lock)
+	{lx=lock;}
+
+	void
+	Point::lock_y(bool lock)
+	{ly=lock;}
+
+	void
+	Point::lock_z(bool lock)
+	{lz=lock;}
+
+	void
+	Point::remove_locks(){
+		lx = ly = lz = false;
+	}
+
+
+
+
 
 }
+
 
 

@@ -3,6 +3,8 @@
 
 #include <tsx/prefix.h>
 
+// preperation data for opengl and cairo to go along with x11 //
+
 namespace tsx{
 
 	class	Rectangle{
@@ -11,12 +13,15 @@ namespace tsx{
 				 Rectangle(float, float);
 				 Rectangle(const Rectangle &);
 				~Rectangle();
+
+		typedef	std::list<Rectangle *>	AddressList;
+		typedef	std::list<Rectangle>	List;
 	
 	// commonly used names // for lists and such //
 	static	Rectangle	create(float, float);
 	static	Rectangle	create(const Rectangle &);
-	static	Rectangle *	create_pointer(float, float);
-	static	Rectangle *	create_pointer(const Rectangle &);
+	static	Rectangle *	create_address(float, float);
+	static	Rectangle *	create_address(const Rectangle &);
 
 friend		void		set(Rectangle &, float W, float H);
 friend		void		set(Rectangle &, const Rectangle &);
@@ -57,26 +62,30 @@ friend		void		scale_height(Rectangle &, float);
 			void	scale_width(float);
 			void	scale_height(float);
 
+			float	perimeter()		const;
+			float	magnitude()		const;	// return the length from corner to corner //
+
 			void	remove_locks();
 
 		// future inheritance methods //
 		// return copies of values //
 	const	Rectangle &	rectangle()		const;
 
-		// pointers for inherited reasons //
-		Rectangle *	rectangle_pointer();
+		// addresss for inherited reasons //
+		Rectangle *	rectangle_address();
 
 		// reference returns // becuase c++... //
 		Rectangle &	rectangle_ref();
 			
-		bool 		operator	== ( const Rectangle & );
-		bool 		operator	!= ( const Rectangle & );
-	const	Rectangle &	operator	+= ( const Rectangle & );
-	const	Rectangle &	operator	-= ( const Rectangle & );
-	const	Rectangle &	operator	 = ( const Rectangle & );
-	const	Rectangle &	operator	 + ( const Rectangle & );
-	const	Rectangle &	operator	 - ( const Rectangle & );
-	const	Rectangle &	operator	 * ( float );
+		bool 		operator	== (const Rectangle &);
+		bool 		operator	!= (const Rectangle &);
+	const	Rectangle &	operator	+= (const Rectangle &);
+	const	Rectangle &	operator	-= (const Rectangle &);
+	const	Rectangle &	operator	*= (const Rectangle &);
+	const	Rectangle &	operator	 = (const Rectangle &);
+	const	Rectangle &	operator	 + (const Rectangle &);
+	const	Rectangle &	operator	 - (const Rectangle &);
+	const	Rectangle &	operator	 * (float);
 
 		protected:
 			float	w, h;		// width height //
@@ -93,6 +102,22 @@ friend		void		scale_height(Rectangle &, float);
 				 Point(float, float, float);
 				~Point();
 
+		typedef	std::list<Point *>	AddressList;
+		typedef	std::list<Point>	List;
+
+		static	Point	create(float, float, float);
+		static	Point	create(const Point &);
+		static	Point *	create_address(float, float, float);
+		static	Point *	create_address(const Point &);
+	
+	friend		Point 	add(const Point &, const Point &);
+	friend	const	Point &	add_to(Point &, const Point &);
+
+	friend		Point	sub(const Point &, const Point &);
+	friend	const	Point &	sub_from(Point &, const Point &);
+
+	friend	const	Point &	scale(Point &, float, float =1.0f, float =1.0f);
+
 			float	x()		const;
 			void	x(float);
 
@@ -102,27 +127,55 @@ friend		void		scale_height(Rectangle &, float);
 			float	z()		const;
 			void	z(float);
 
+			bool	point_locked()	const;
+			void	lock_point(bool =true);
+
 			bool	x_locked()	const;
 			bool	y_locked()	const;
 			bool	z_locked()	const;
 
-			void	lock_x(bool =true);
-			void	lock_y(bool =true);
-			void	lock_z(bool =true);
+			void	lock_x(bool =true);	// lock to x-line //
+			void	lock_y(bool =true);	// lock to y-line //
+			void	lock_z(bool =true);	// lock to z-line //
+			// if all true, point remains constant //
 
 			void	remove_locks();
+			void	scale(float, float, float);
+			void	scale_x(float);
+			void	scale_y(float);
+			void	scale_z(float);
 
-			float	distance( float, float, float );
-			float	distance( const Point & );
+			float	distance(float, float, float)const;
+			float	distance(const Point &)const;
 			float	magnitude()	const;
+
+
+		const	Point &	point()		const;
+			Point *	point_address();
+			Point & point_ref();
+
+			bool	operator	== (const Point &);
+			bool	operator	!= (const Point &);
+		const	Point &	operator	+= (const Point &);
+		const	Point &	operator	-= (const Point &);
+		const	Point &	operator	*= (const Point &);
+		const	Point &	operator	 = (const Point &);
+		const	Point &	operator	 + (const Point &);
+		const	Point &	operator	 * (const Point &);
 
 		protected:
 			float	px, py, pz;
-			bool	lx, ly, lz;	// point locks //
-			bool	bx, by, bz;	// point blockers // restrict point to a plane(s) or line //
+			bool	lx, ly, lz;	// if ly is true, the value will be locked to the y-line // can not change x or z //
+						// if all are true, point can not move //
 		private:
+			bool	can_set_x()	const;
+			bool	can_set_y()	const;
+			bool	can_set_z()	const;
 	};
 
+
+
+	
 
 
 }
