@@ -1,74 +1,29 @@
 #include <tsx/prefix.h>
-#include <tsx/display.h>
-#include <tsx/widget.h>
-#include <tsx/application.h>
-
-#define	ThreadCount	1024
-
-GPU
-void	cuda_main(){
-}
+#include <tsx/geometry.h>
 
 int main(int argc, char ** argv){
 	
-	tsx::App	app(argc, argv);
-	tsx::Widget	child1 = app.spawn(50,25, 5,5);
-	tsx::Widget	child2 = app.spawn(50,25, 5,35);
+	tsx::Rectangle	obj1 = tsx::Rectangle::create(10,10);
+	tsx::Rectangle	obj2 = tsx::Rectangle::create(20,10);
+	tsx::Rectangle	obj3 = obj1 + obj2;
 
-	app.width(500);
-	app.height(500);
+	obj1.max_rectangle(15,20);
+	obj1.min_rectangle(1,1);
 
-	app.x(50);
-	app.y(150);
+	obj2.max_rectangle(35,35);
+	obj2.min_rectangle(1,1);
 
-	app.start();
+	std::cout << "Info: obj1 w=" << obj1.width() << " h=" << obj1.height() << std::endl;
+	std::cout << "Info: obj2 w=" << obj2.width() << " h=" << obj2.height() << std::endl;
+	std::cout << "Info: obj3 w=" << obj3.width() << " h=" << obj3.height() << std::endl;
 
-	child1.border_pixel(0xbeef);
-	child1.show();
+	std::cout << "Max Info: obj1 w=" << obj1.max_rectangle().width() << " h=" << obj1.max_rectangle().height() << std::endl;
+	std::cout << "Max Info: obj2 w=" << obj2.max_rectangle().width() << " h=" << obj2.max_rectangle().height() << std::endl;
+	std::cout << "Max Info: obj3 w=" << obj3.max_rectangle().width() << " h=" << obj3.max_rectangle().height() << std::endl;
+	
+	std::cout << "Min Info: obj1 w=" << obj1.min_rectangle().width() << " h=" << obj1.min_rectangle().height() << std::endl;
+	std::cout << "Min Info: obj2 w=" << obj2.min_rectangle().width() << " h=" << obj2.min_rectangle().height() << std::endl;
+	std::cout << "Min Info: obj3 w=" << obj3.min_rectangle().width() << " h=" << obj3.min_rectangle().height() << std::endl;
 
-	child2.border_pixel(0xbeef);
-	child2.show();
-
-	while( app.running() ){
-		app.next_event();
-
-		child1.update_widget();
-		child2.update_widget();
-
-		switch( app.event_type() ){
-			case	KeyPress:
-				std::cout << "Ending Program" << std::endl;
-				app.stop();
-				break;
-			case	EnterNotify:
-				if( app.event_window() is child1.drawable() ){
-					child1.border_pixel(0xdead);
-				}
-				if( app.event_window() is child2.drawable() ){
-					child2.border_pixel(0xdead);
-				}
-				break;
-			case	LeaveNotify:
-				if( app.event_window() is child1.drawable() ){
-					child1.border_pixel(0xbeef);
-				}
-				if( app.event_window() is child2.drawable() ){
-					child2.border_pixel(0xbeef);
-				}
-				break;
-			case	ButtonPress:
-				if( app.event_window() is child1.drawable() ){
-					std::cout << "button 1 clicked" << std::endl;
-				}
-
-				if( app.event_window() is child2.drawable() ){
-					std::cout << "button 2 clicked" << std::endl;
-				}
-				break;
-		}
-	}
-
-	app.destroy();
-		
 return	0;
 }
