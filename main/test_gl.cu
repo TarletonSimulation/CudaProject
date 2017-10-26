@@ -3,13 +3,10 @@
 
 int main(int argc, char ** argv){
 	
-	tsx::Rectangle	rect1 = tsx::Rectangle::create(12,13);
-
-	rect1.scale_width((1.0/3));
-	rect1.scale_height(2);
-
-	std::cout << "Width: " << rect1.width() << std::endl;
-	std::cout << "Hiehgt: " << rect1.height() << std::endl;
+	tsx::Point at_1 = tsx::Point::create(12,10);
+	tsx::Point at_2 = tsx::Point::create(10,2);
+	tsx::test_func();
+//	std::cout << "The distance from 1 -> 2 is " << tsx::distance(at_1, at_2) << std::endl;
 
 return	0;
 }
