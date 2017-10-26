@@ -4,9 +4,7 @@
 #include <tsx/prefix.h>
 
 namespace tsx{
-	
 
-	// for x11 // and general integer sized rectangles //
 	class	Rectangle{
 		public:
 				 Rectangle();
@@ -59,6 +57,8 @@ friend		void		scale_height(Rectangle &, float);
 			void	scale_width(float);
 			void	scale_height(float);
 
+			void	remove_locks();
+
 		// future inheritance methods //
 		// return copies of values //
 	const	Rectangle &	rectangle()		const;
@@ -84,6 +84,44 @@ friend		void		scale_height(Rectangle &, float);
 			bool	h_lock;
 	};
 
+
+
+	
+	class	Point{
+		public:
+				 Point();
+				 Point(float, float, float);
+				~Point();
+
+			float	x()		const;
+			void	x(float);
+
+			float	y()		const;
+			void	y(float);
+
+			float	z()		const;
+			void	z(float);
+
+			bool	x_locked()	const;
+			bool	y_locked()	const;
+			bool	z_locked()	const;
+
+			void	lock_x(bool =true);
+			void	lock_y(bool =true);
+			void	lock_z(bool =true);
+
+			void	remove_locks();
+
+			float	distance( float, float, float );
+			float	distance( const Point & );
+			float	magnitude()	const;
+
+		protected:
+			float	px, py, pz;
+			bool	lx, ly, lz;	// point locks //
+			bool	bx, by, bz;	// point blockers // restrict point to a plane(s) or line //
+		private:
+	};
 
 
 

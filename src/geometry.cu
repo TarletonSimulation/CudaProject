@@ -156,7 +156,12 @@ namespace	tsx{
 	}
 
 	// end static methods //
-
+	
+	void
+	Rectangle::remove_locks(){
+		w_lock = false;
+		h_lock = false;
+	}
 
 	void
 	Rectangle::width(float W){
