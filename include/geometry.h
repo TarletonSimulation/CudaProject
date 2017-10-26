@@ -148,10 +148,10 @@ static		Rectangle	copy_to_scale(const Rectangle &, float);
 	friend		Point *	free_point(Point *);
 	static		Point * free_point(Point *);
 	
-	friend	const	Point &	add(const Point &, const Point &);
-	friend	const	Point &	add(const Point &, float, float, float);
-	static	const	Point &	add(const Point &, const Point &);
-	static	const	Point &	add(const Point &, float, float, float);
+	friend		Point	add(const Point &, const Point &);
+	friend		Point	add(const Point &, float, float, float);
+	static		Point	add(const Point &, const Point &);
+	static		Point	add(const Point &, float, float, float);
 		const	Point &	add(const Point &) const;
 		const	Point &	add(float, float, float) const;
 
@@ -163,12 +163,12 @@ static		Rectangle	copy_to_scale(const Rectangle &, float);
 	static	const	Point &	add_to(Point &, float, float, float);
 		const	Point & add_to(float, float, float);
 
-	friend	const	Point &	sub(const Point &, const Point &);
-	static	const	Point &	sub(const Point &, const Point &);
+	friend		Point	sub(const Point &, const Point &);
+	static		Point	sub(const Point &, const Point &);
 		const	Point &	sub(const Point &) const;
 
-	friend	const	Point &	sub(const Point &, float, float, float);
-	static	const	Point &	sub(const Point &, float, float, float);
+	friend		Point	sub(const Point &, float, float, float);
+	static		Point	sub(const Point &, float, float, float);
 		const	Point &	sub(float, float, float);
 
 	friend	const	Point &	sub_from(Point &, const Point &);
@@ -291,7 +291,8 @@ const	Point	&	scale(Point &, const Point &);
 		float	distance(const Point &, float, float, float);
 		float	magnitude(const Point &);
 
-		void	test_func();
+		float	product(const Point &, const Point &);
+		float	product(const Point &, float, float, float);
 	
 
 

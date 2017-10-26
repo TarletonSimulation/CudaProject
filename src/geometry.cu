@@ -55,7 +55,7 @@ namespace	tsx{
 		tsx::set(A,B);
 	}
 
-	const Rectangle &
+	Rectangle
 	add( const Rectangle & A, const Rectangle & B ){
 		Rectangle C( A.width() + B.width(), A.height() + B.height() );
 
@@ -66,9 +66,10 @@ namespace	tsx{
 		if( (A.height_locked() is true) or (B.height_locked() is true) )
 			C.lock_height(true);
 		else	C.lock_height(false);
+	return	C;
 	}
 
-	const Rectangle &
+	Rectangle
 	Rectangle::add(const Rectangle & A, const Rectangle & B){
 		return	tsx::add(A,B);
 	}
@@ -79,7 +80,7 @@ namespace	tsx{
 		return	tsx::add(*this,A);
 	}
 
-	const Rectangle &
+	Rectangle
 	add(const Rectangle & A, float a, float b){
 		Rectangle C(A);
 		C.width( C.width() + a );
@@ -87,7 +88,7 @@ namespace	tsx{
 	return	C;
 	}
 
-	const Rectangle &
+	Rectangle
 	Rectangle::add(const Rectangle & A, float a, float b){
 		return	tsx::add(A,a,b);
 	}
@@ -112,7 +113,7 @@ namespace	tsx{
 		return	tsx::add_to(A,B);
 	}
 
-	const Rectangle &
+	Rectangle
 	sub(const Rectangle & A, const Rectangle & B){
 		Rectangle C( A.width() - B.width(), A.height() - B.height() );
 
@@ -125,12 +126,12 @@ namespace	tsx{
 		else	C.lock_height(false);
 	}
 
-	const Rectangle &
+	Rectangle
 	Rectangle::sub( const Rectangle & A, const Rectangle & B ){
 		return	tsx::sub(A,B);
 	}
 
-	const Rectangle &
+	Rectangle
 	sub(const Rectangle & A, float W, float H){
 		Rectangle C( A.width() - W, A.height() - H );
 		
@@ -142,7 +143,7 @@ namespace	tsx{
 	return	C;
 	}
 
-	const Rectangle &
+	Rectangle
 	Rectangle::sub(const Rectangle & A, float W, float H){
 		return	tsx::sub(A,W,H);
 	}
@@ -486,7 +487,7 @@ namespace	tsx{
 		return	tsx::add(a,b);
 	}
 
-	Point
+	const Point &
 	Point::add(const Point & b)
 	const{
 		return	tsx::add(*this,b);
@@ -507,7 +508,7 @@ namespace	tsx{
 		return	tsx::add(A,a,b,c);
 	}
 
-	Point
+	const Point &
 	Point::add(float a, float b, float c)
 	const{
 		return	tsx::add(*this,a,b,c);
