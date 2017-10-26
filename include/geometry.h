@@ -18,30 +18,57 @@ namespace tsx{
 		typedef	std::list<Rectangle>	List;
 	
 	// commonly used names // for lists and such //
-	static	Rectangle	create(float, float);
-	static	Rectangle	create(const Rectangle &);
-	static	Rectangle *	create_address(float, float);
-	static	Rectangle *	create_address(const Rectangle &);
-
-friend		void		set(Rectangle &, float W, float H);
+static		Rectangle 	create(float, float);
+static		Rectangle *	create_address(float, float);
+	// for inheritance purposes and ease of use for the programmer //
+friend		void		set(Rectangle &, float, float);
+static		void		set(Rectangle &, float, float);
 friend		void		set(Rectangle &, const Rectangle &);
+static		void		set(Rectangle &, const Rectangle &);
 
+friend		float		area(const Rectangle &);
 static		float		area(const Rectangle &);
+
+friend		float		width(const Rectangle &);
 static		float		width(const Rectangle &);
+
+friend		float		height(const Rectangle &);
 static		float		height(const Rectangle &);
 
 static		bool		width_locked(const Rectangle &);
+friend		bool		width_locked(const Rectangle &);
+
 static		bool		height_locked(const Rectangle &);
+friend		bool		height_locked(const Rectangle &);
 
-friend		Rectangle	add(const Rectangle &, const Rectangle &);
+friend		Rectangle 	add(const Rectangle &, const Rectangle &);
+friend		Rectangle	add(const Rectangle &, float, float);
+static		Rectangle	add(const Rectangle &, const Rectangle &);
+static		Rectangle	add(const Rectangle &, float, float);
+
 friend	const	Rectangle &	add_to(Rectangle &, const Rectangle &);
+friend	const	Rectangle &	add_to(Rectangle &, float, float);
+static	const	Rectangle &	add_to(Rectangle &, const Rectangle &);
+static	const	Rectangle &	add_to(Rectangle &, float, float);
 
-friend		Rectangle 	sub(const Rectangle &, const Rectangle &);
+friend		Rectangle	sub(const Rectangle &, const Rectangle &);
+friend		Rectangle	sub(const Rectangle &, float, float);
+static		Rectangle	sub(const Rectangle &, const Rectangle &);
+static		Rectangle	sub(const Rectangle &, float, float);
+
 friend	const	Rectangle &	sub_from(Rectangle &, const Rectangle &);
+friend	const	Rectangle &	sub_from(Rectangle &, float, float);
+static	const	Rectangle &	sub_from(Rectangle &, const Rectangle &);
+static	const	Rectangle &	sub_from(Rectangle &, float, float);
 
 friend		void		scale(Rectangle &, float);
+static		void		scale(Rectangle &, float);
+
 friend		void		scale_width(Rectangle &, float);
+static		void		scale_width(Rectangle &, float);
+
 friend		void		scale_height(Rectangle &, float);
+static		void		scale_height(Rectangle &, float);
 
 			void	width(float);
 			float	width()			const;
@@ -100,23 +127,31 @@ friend		void		scale_height(Rectangle &, float);
 		public:
 				 Point();
 				 Point(float, float, float);
+				 Point(const Point &, bool =false);	// the boolean is for copying the other objects point lock info // false does not copy //
 				~Point();
 
 		typedef	std::list<Point *>	AddressList;
 		typedef	std::list<Point>	List;
 
 		static	Point	create(float, float, float);
-		static	Point	create(const Point &);
 		static	Point *	create_address(float, float, float);
-		static	Point *	create_address(const Point &);
 	
-	friend		Point 	add(const Point &, const Point &);
+	friend		Point	add(const Point &, const Point &);
 	friend	const	Point &	add_to(Point &, const Point &);
+	friend	const	Point &	add_to(Point &, float, float, float);
 
 	friend		Point	sub(const Point &, const Point &);
 	friend	const	Point &	sub_from(Point &, const Point &);
+	friend	const	Point &	sub_from(Point &, float, float, float);
 
-	friend	const	Point &	scale(Point &, float, float =1.0f, float =1.0f);
+	friend	const	Point &	scale(Point &, float);			// mult all //
+	friend	const	Point & scale(Point &, float, float);		// mult xy-plane //
+	friend	const	Point &	scale(Point &, float, float, float);	// mult individual //
+	friend	const	Point &	scale(Point &, const Point &);		// point scale //
+			
+	friend		float	product(const Point &, const Point &);	// dot product for points // global //
+	static		float	product(const Point &, const Point &);	// local static //
+			float	product(const Point &)const;		// local non-static //
 
 			float	x()		const;
 			void	x(float);

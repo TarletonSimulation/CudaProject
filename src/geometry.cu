@@ -34,11 +34,21 @@ namespace	tsx{
 	}
 
 	void
+	Rectangle::set( Rectangle & A, float W, float H ){
+		tsx::set(A,W,H);
+	}
+
+	void
 	set( Rectangle & A, const Rectangle & B ){
 		set(A,B.width(),B.height());
 		
 		A.lock_width( B.width_locked() );
 		A.lock_height( B.height_locked() );
+	}
+
+	void
+	Rectangle::set( Rectangle & A, const Rectangle & B ){
+		tsx::set(A,B);
 	}
 
 	Rectangle
@@ -54,6 +64,11 @@ namespace	tsx{
 		else	C.lock_height(false);
 	}
 
+	Rectangle
+	Rectangle::add(const Rectangle & A, const Rectangle & B){
+		return	tsx::add(A,B);
+	}
+
 	const Rectangle &
 	add_to( Rectangle & A, const Rectangle & B ){
 		if( A.width_locked() is false )
@@ -61,6 +76,11 @@ namespace	tsx{
 		if( A.height_locked() is false )
 			A.height( A.height() + B.height() );
 	return	A;
+	}
+
+	const Rectangle &
+	Rectangle::add_to( Rectangle & A, const Rectangle & B ){
+		return	tsx::add_to(A,B);
 	}
 
 	Rectangle
@@ -76,6 +96,11 @@ namespace	tsx{
 		else	C.lock_height(false);
 	}
 
+	Rectangle
+	Rectangle::sub( const Rectangle & A, const Rectangle & B ){
+		return	tsx::sub(A,B);
+	}
+
 	const Rectangle &
 	sub_from(Rectangle & A, const Rectangle & B){
 		if( A.width_locked() is false )
@@ -83,6 +108,11 @@ namespace	tsx{
 		if( A.height_locked() is false )
 			A.height( A.height() - B.height() );
 	return	A;
+	}
+
+	const Rectangle &
+	Rectangle::sub_from(Rectangle & A, const Rectangle & B){
+		return	tsx::sub_from(A,B);
 	}
 
 	
@@ -95,15 +125,30 @@ namespace	tsx{
 	}
 
 	void
+	Rectangle::scale(Rectangle & A, float X){
+		return	tsx::scale(A,X);
+	}
+
+	void
 	scale_width(Rectangle & A, float x){
 		if( A.width_locked() is false )
 			A.width( A.width()*x );
 	}
 
 	void
+	Rectangle::scale_width(Rectangle & A, float x){
+		tsx::scale_width(A,x);
+	}
+
+	void
 	scale_height(Rectangle & A, float x){
 		if( A.height_locked() is false )
 			A.height( A.height()*x );
+	}
+
+	void
+	Rectangle::scale_height(Rectangle & A, float x){
+		tsx::scale_height(A,x);
 	}
 
 	// end friend functions //
@@ -115,19 +160,9 @@ namespace	tsx{
 		return	Rectangle(W,H);
 	}
 
-	Rectangle
-	Rectangle::create(const Rectangle & rect){
-		return	Rectangle(rect);
-	}
-
 	Rectangle *
 	Rectangle::create_address(float W, float H){
 		return	new Rectangle(W,H);
-	}
-
-	Rectangle *
-	Rectangle::create_address(const Rectangle & rect){
-		return	new Rectangle(rect);
 	}
 
 	float
@@ -258,7 +293,8 @@ namespace	tsx{
 	const{return 2*(w+h);}
 
 	float
-	Rectangle::magnitude(){
+	Rectangle::magnitude()
+	const{
 		return	sqrtf( area() );
 	}
 
@@ -277,35 +313,40 @@ namespace	tsx{
 		else	return	true;
 	}
 
+	bool
+	Rectangle::operator	!= (const Rectangle & rect){
+		return	( (*this is rect) is false );
+	}
+
 	const Rectangle &
 	Rectangle::operator	=  (const Rectangle & rect){
-		set(*this,rect);
+		tsx::set(*this,rect);
 	return	*this;
 	}
 
 	const Rectangle &
 	Rectangle::operator	+ (const Rectangle & rect){
-		return add(*this,rect);
+		return tsx::add(*this,rect);
 	}
 
 	const Rectangle &
 	Rectangle::operator	+= (const Rectangle & rect){
-		return	add_to(*this,rect);
+		return	tsx::add_to(*this,rect);
 	}
 
 	const Rectangle &
 	Rectangle::operator	-  (const Rectangle & rect){
-		return	sub(*this,rect);
+		return	tsx::sub(*this,rect);
 	}
 
 	const Rectangle &
 	Rectangle::operator	-= (const Rectangle & rect){
-		return	sub_from(*this,rect);
+		return	tsx::sub_from(*this,rect);
 	}
 
 	const Rectangle &
 	Rectangle::operator	*  ( float x ){
-		scale(x);
+		tsx::scale(*this,x);
 	}
 
 	// private methods //
@@ -354,6 +395,26 @@ namespace	tsx{
 	}
 
 	Point::~Point(){}
+
+	const Point &
+	Point::point()
+	const{return *this;}
+
+	Point *
+	Point::point_address()
+	{return this;}
+
+	Point &
+	Point::point_ref()
+	{return *this;}
+
+	// friend zone //
+
+	const Point &
+	add(){
+	}
+
+	// end friend zone //
 	
 	bool
 	Point::point_locked()
@@ -450,6 +511,8 @@ namespace	tsx{
 	Point::remove_locks(){
 		lx = ly = lz = false;
 	}
+
+
 
 
 
