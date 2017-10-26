@@ -34,7 +34,7 @@ friend	const	Rectangle &	add_to(Rectangle &, const Rectangle &);
 friend		Rectangle 	sub(const Rectangle &, const Rectangle &);
 friend	const	Rectangle &	sub_from(Rectangle &, const Rectangle &);
 
-friend		void		scale(Rectangle &, float);			// floating point because it can be scaled downward //
+friend		void		scale(Rectangle &, float);
 friend		void		scale_width(Rectangle &, float);
 friend		void		scale_height(Rectangle &, float);
 
