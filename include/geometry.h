@@ -6,6 +6,8 @@
 // preperation data for opengl and cairo to go along with x11 //
 
 namespace tsx{
+	
+	void	test_func();
 
 	class	Rectangle{
 		public:
@@ -68,11 +70,13 @@ friend	const	Rectangle &	sub_from(Rectangle &, float, float);
 static	const	Rectangle &	sub_from(Rectangle &, const Rectangle &);
 static	const	Rectangle &	sub_from(Rectangle &, float, float);
 
-friend		void		scale(Rectangle &, float);
-static		void		scale(Rectangle &, float);
+friend	const	Rectangle &	scale(Rectangle &, float);
+static	const	Rectangle &	scale(Rectangle &, float);
+	const	Rectangle &	scale(float);
 
-friend		void		scale(Rectangle &, float, float);
-static		void		scale(Rectangle &, float, float);
+friend	const	Rectangle &	scale(Rectangle &, float, float);
+static	const	Rectangle &	scale(Rectangle &, float, float);
+	const	Rectangle &	scale(float, float);
 
 friend		Rectangle	copy_to_scale(const Rectangle &, float);
 static		Rectangle	copy_to_scale(const Rectangle &, float);
@@ -92,10 +96,6 @@ static		Rectangle	copy_to_scale(const Rectangle &, float);
 
 			void	rectangle(float, float);
 			void	rectangle(const Rectangle &);
-
-			void	scale(float);
-			void	scale_width(float);
-			void	scale_height(float);
 
 			float	perimeter()		const;
 			float	magnitude()		const;	// return the length from corner to corner //
@@ -148,12 +148,12 @@ static		Rectangle	copy_to_scale(const Rectangle &, float);
 	friend		Point *	free_point(Point *);
 	static		Point * free_point(Point *);
 	
-	friend		Point	add(const Point &, const Point &);
-	friend		Point	add(const Point &, float, float, float);
-	static		Point	add(const Point &, const Point &);
-	static		Point	add(const Point &, float, float, float);
-			Point	add(const Point &) const;
-			Point	add(float, float, float) const;
+	friend	const	Point &	add(const Point &, const Point &);
+	friend	const	Point &	add(const Point &, float, float, float);
+	static	const	Point &	add(const Point &, const Point &);
+	static	const	Point &	add(const Point &, float, float, float);
+		const	Point &	add(const Point &) const;
+		const	Point &	add(float, float, float) const;
 
 	friend	const	Point &	add_to(Point &, const Point &);
 	static	const	Point &	add_to(Point &, const Point &);
@@ -163,9 +163,13 @@ static		Rectangle	copy_to_scale(const Rectangle &, float);
 	static	const	Point &	add_to(Point &, float, float, float);
 		const	Point & add_to(float, float, float);
 
-	friend		Point	sub(const Point &, const Point &);
-	static		Point	sub(const Point &, const Point &);
-			Point	sub(const Point &) const;
+	friend	const	Point &	sub(const Point &, const Point &);
+	static	const	Point &	sub(const Point &, const Point &);
+		const	Point &	sub(const Point &) const;
+
+	friend	const	Point &	sub(const Point &, float, float, float);
+	static	const	Point &	sub(const Point &, float, float, float);
+		const	Point &	sub(float, float, float);
 
 	friend	const	Point &	sub_from(Point &, const Point &);
 	static	const	Point &	sub_from(Point &, const Point &);
@@ -272,9 +276,22 @@ const	Rectangle &	add_to(Rectangle &, float, float);
 	Rectangle	sub(const Rectangle &, float, float);
 const	Rectangle &	sub_from(Rectangle &, const Rectangle &);
 const	Rectangle &	sub_from(Rectangle &, float, float);
-	
+
 const	Rectangle &	scale(Rectangle &, float);
 const	Rectangle &	scale(Rectangle &, float, float);
+	
+
+
+const	Point	&	scale(Point &, float);
+const	Point	&	scale(Point &, float, float, std::string);
+const	Point	&	scale(Point &, float, float, float);
+const	Point	&	scale(Point &, const Point &);
+
+		float	distance(const Point &, const Point &);
+		float	distance(const Point &, float, float, float);
+		float	magnitude(const Point &);
+
+		void	test_func();
 	
 
 
