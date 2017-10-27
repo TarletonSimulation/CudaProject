@@ -6,8 +6,6 @@
 // preperation data for opengl and cairo to go along with x11 //
 
 namespace tsx{
-	
-	void	test_func();
 
 	class	Rectangle{
 		public:
@@ -16,8 +14,11 @@ namespace tsx{
 				 Rectangle(const Rectangle &);
 				~Rectangle();
 
-		typedef	std::list<Rectangle *>	AddressList;
-		typedef	std::list<Rectangle>	List;
+		typedef		std::list<Rectangle *>	AddressList;
+		typedef		std::list<Rectangle>	List;
+
+static	const	float		MinWidth = 0.0f;
+static	const	float 		MinHeight= 0.0f;
 	
 	// commonly used names // for lists and such //
 static		Rectangle 	create(float, float);
@@ -28,30 +29,38 @@ static		Rectangle *	free_rectangle(Rectangle *);
 	// for inheritance purposes and ease of use for the programmer //
 friend		void		set(Rectangle &, float, float);
 static		void		set(Rectangle &, float, float);
+		void		set(float, float)	const;
+
 friend		void		set(Rectangle &, const Rectangle &);
 static		void		set(Rectangle &, const Rectangle &);
+		void		set(const Rectangle &)	const;
 
 friend		float		area(const Rectangle &);
 static		float		area(const Rectangle &);
+		float		area()	const;
 
 friend		float		width(const Rectangle &);
 static		float		width(const Rectangle &);
+		float		width()	const;
 
 friend		float		height(const Rectangle &);
 static		float		height(const Rectangle &);
+		float		height() const;
 
 static		bool		width_locked(const Rectangle &);
 friend		bool		width_locked(const Rectangle &);
+		bool		width_locked() const;
 
 static		bool		height_locked(const Rectangle &);
 friend		bool		height_locked(const Rectangle &);
+		bool		height_locked() const;
 
 friend		Rectangle 	add(const Rectangle &, const Rectangle &);
 friend		Rectangle	add(const Rectangle &, float, float);
 static		Rectangle	add(const Rectangle &, const Rectangle &);
 static		Rectangle	add(const Rectangle &, float, float);
 	const	Rectangle &	add(const Rectangle &)const;
-	const	Rectangle &	add(float, float)const;
+	const	Rectangle &	add(float, float)	const;
 
 friend	const	Rectangle &	add_to(Rectangle &, const Rectangle &);
 friend	const	Rectangle &	add_to(Rectangle &, float, float);
@@ -63,7 +72,7 @@ friend		Rectangle	sub(const Rectangle &, float, float);
 static		Rectangle	sub(const Rectangle &, const Rectangle &);
 static		Rectangle	sub(const Rectangle &, float, float);
 	const	Rectangle &	sub(const Rectangle &) const;
-	const	Rectangle &	sub(float, float) const;
+	const	Rectangle &	sub(float, float)	const;
 
 friend	const	Rectangle &	sub_from(Rectangle &, const Rectangle &);
 friend	const	Rectangle &	sub_from(Rectangle &, float, float);
@@ -82,26 +91,44 @@ friend		Rectangle	copy_to_scale(const Rectangle &, float);
 static		Rectangle	copy_to_scale(const Rectangle &, float);
 		Rectangle	copy_to_scale(float)	const;
 
-			void	width(float);
-			float	width()			const;
-			void	lock_width(bool =true);
-			bool	width_locked()		const;
+friend		Rectangle	copy_to_scale(const Rectangle &, float, float);
+static		Rectangle	copy_to_scale(const Rectangle &, float, float);
+		Rectangle	copy_to_scale(float, float)	const;
 
-			void	height(float);
-			float	height()		const;
-			void	lock_height(bool =true);
-			bool	height_locked()		const;
+friend			bool	auto_locked(const Rectangle &);
+static			bool	auto_locked(const Rectangle &);
+			bool	auto_locked()		const;
+friend			void	auto_lock(Rectangle &, bool =true);
+static			void	auto_lock(Rectangle &, bool =true);
+			void	auto_lock(bool =true);
 
-			float	area()			const;
-
-			void	rectangle(float, float);
-			void	rectangle(const Rectangle &);
-
+friend			float	perimeter(const Rectangle &);
+static			float	perimeter(const Rectangle &);
 			float	perimeter()		const;
-			float	magnitude()		const;	// return the length from corner to corner //
 
+friend			float	magnitude(const Rectangle &);
+static			float	magnitude(const Rectangle &);
+			float	magnitude()		const;
+
+friend			void	lock(Rectangle &, bool =true, bool =true);
+static			void	lock(Rectangle &, bool =true, bool =true);
+			void	lock(bool =true, bool =true);
+
+friend			void	remove_locks(Rectangle &);
+static			void	remove_locks(Rectangle &);
 			void	remove_locks();
-			bool	has_locks()		const;
+
+friend			bool	has_locks(Rectangle &);
+static			bool	has_locks(Rectangle &);
+			bool	has_locks() const;
+
+friend			void	lock_width(Rectangle &, bool =true);
+static			void	lock_width(Rectangle &, bool =true);
+			void	lock_width(bool =true);
+
+friend			void	lock_height(Rectangle &, bool =true);
+static			void	lock_height(Rectangle &, bool =true);
+			void	lock_height(bool =true);
 
 		// future inheritance methods //
 		// return copies of values //
@@ -117,16 +144,22 @@ static		Rectangle	copy_to_scale(const Rectangle &, float);
 		bool 		operator	!= (const Rectangle &);
 	const	Rectangle &	operator	+= (const Rectangle &);
 	const	Rectangle &	operator	-= (const Rectangle &);
-	const	Rectangle &	operator	*= (const Rectangle &);
+		Rectangle	operator	*= (float);
 	const	Rectangle &	operator	 = (const Rectangle &);
-	const	Rectangle &	operator	 + (const Rectangle &);
-	const	Rectangle &	operator	 - (const Rectangle &);
-	const	Rectangle &	operator	 * (float);
+		Rectangle	operator	 + (const Rectangle &);
+		Rectangle	operator	 - (const Rectangle &);
+		Rectangle	operator	 * (float);
 
 		protected:
 			float	w, h;		// width height //
 			bool	w_lock;
 			bool	h_lock;
+
+			bool	auto_lock_set;	// if the auto lock is set // the point sets its locks according to another point if is set to that value //
+						// else the locks remain the same //
+		private:
+	friend		float	safe_mult(float);
+	friend		bool	can_use_scalar(float);
 	};
 
 
@@ -251,8 +284,9 @@ static		Rectangle	copy_to_scale(const Rectangle &, float);
 		const	Point &	operator	*= (const Point &);
 		const	Point &	operator	*= (float);
 		const	Point &	operator	 = (const Point &);
-		const	Point &	operator	 + (const Point &);
-		const	Point &	operator	 * (const Point &);
+			Point	operator	 + (const Point &);
+			Point	operator	 - (const Point &);
+			Point	operator	 * (const Point &);
 		const	Point &	operator	 * (float);
 
 		protected:
@@ -265,7 +299,14 @@ static		Rectangle	copy_to_scale(const Rectangle &, float);
 			bool	can_set_z()	const;
 	};
 
+	float		safe_mult(float);
+	bool		can_use_scalar(float);
 
+	void		lock(Rectangle &, bool, bool);
+	void		lock_width(Rectangle &, bool);
+	void		lock_height(Rectangle &, bool);
+	void		auto_lock(Rectangle &, bool);
+	bool		auto_locked(Rectangle &);
 
 	Rectangle	add(const Rectangle &, const Rectangle &);
 	Rectangle	add(const Rectangle &, float, float);
@@ -279,6 +320,16 @@ const	Rectangle &	sub_from(Rectangle &, float, float);
 
 const	Rectangle &	scale(Rectangle &, float);
 const	Rectangle &	scale(Rectangle &, float, float);
+const	Rectangle &	scale(Rectangle &, const Rectangle &);
+
+	Rectangle	copy_to_scale(const Rectangle &, float);
+	Rectangle	copy_to_scale(const Rectangle &, float, float);
+		
+		void	set(Rectangle &, float, float);
+		void	set(Rectangle &, const Rectangle &);
+		
+		float	perimeter(const Rectangle &);
+		float	magnitude(const Rectangle &);
 	
 
 
