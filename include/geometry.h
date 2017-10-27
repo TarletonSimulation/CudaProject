@@ -147,7 +147,7 @@ static			void	lock_height(Rectangle &, bool =true);
 		bool 		operator	!= (const Rectangle &);
 	const	Rectangle &	operator	+= (const Rectangle &);
 	const	Rectangle &	operator	-= (const Rectangle &);
-		Rectangle	operator	*= (float);
+	const	Rectangle &	operator	*= (float);
 	const	Rectangle &	operator	 = (const Rectangle &);
 		Rectangle	operator	 + (const Rectangle &);
 		Rectangle	operator	 - (const Rectangle &);
@@ -184,12 +184,20 @@ static			void	lock_height(Rectangle &, bool =true);
 	friend		Point *	free_point(Point *);
 	static		Point * free_point(Point *);
 	
+	friend		void	set(Point &, const Point &);
+	static		void	set(Point &, const Point &);
+			void	set(const Point &);
+	
+	friend		void	set(Point &, float, float, float);
+	static		void	set(Point &, float, float, float);
+			void	set(float, float, float);
+	
 	friend		Point	add(const Point &, const Point &);
 	friend		Point	add(const Point &, float, float, float);
 	static		Point	add(const Point &, const Point &);
 	static		Point	add(const Point &, float, float, float);
-		const	Point &	add(const Point &) const;
-		const	Point &	add(float, float, float) const;
+			Point	add(const Point &) const;
+			Point	add(float, float, float) const;
 
 	friend	const	Point &	add_to(Point &, const Point &);
 	static	const	Point &	add_to(Point &, const Point &);
@@ -201,11 +209,11 @@ static			void	lock_height(Rectangle &, bool =true);
 
 	friend		Point	sub(const Point &, const Point &);
 	static		Point	sub(const Point &, const Point &);
-		const	Point &	sub(const Point &) const;
+			Point	sub(const Point &) const;
 
 	friend		Point	sub(const Point &, float, float, float);
 	static		Point	sub(const Point &, float, float, float);
-		const	Point &	sub(float, float, float);
+			Point	sub(float, float, float) const;
 
 	friend	const	Point &	sub_from(Point &, const Point &);
 	static	const	Point &	sub_from(Point &, const Point &);
@@ -230,10 +238,26 @@ static			void	lock_height(Rectangle &, bool =true);
 	friend	const	Point &	scale(Point &, const Point &);		// point scale //
 	static	const	Point & scale(Point &, const Point &);
 		const	Point &	scale(const Point &);
+	
+	friend		Point	copy_to_scale(const Point &, float);
+	static		Point	copy_to_scale(const Point &, float);
+			Point	copy_to_scale(float)	const;
+			
+	friend		Point	copy_to_scale(const Point &, float, float, float);
+	static		Point	copy_to_scale(const Point &, float, float, float);
+			Point	copy_to_scale(float, float, float) const;
+
+	friend		Point	copy_to_scale(const Point &, const Point &);
+	static		Point	copy_to_scale(const Point &, const Point &);
+			Point	copy_to_scale(const Point &) const;
 			
 	friend		float	product(const Point &, const Point &);	// dot product for points // global //
 	static		float	product(const Point &, const Point &);	// local static //
 			float	product(const Point &)	const;		// local non-static //
+	
+	friend		float	product(const Point &, float, float, float);
+	static		float	product(const Point &, float, float, float);
+			float	product(float, float, float) const;
 
 	friend		float	distance(const Point &, const Point &);
 	static		float	distance(const Point &, const Point &);
@@ -247,31 +271,60 @@ static			void	lock_height(Rectangle &, bool =true);
 	static		float	magnitude(const Point &);
 			float	magnitude()	const;
 	
-	friend		float	x(const Point &);
+	friend		bool	point_locked(const Point &);
+	static		bool	point_locked(const Point &);
+			bool	point_locked()	const;
+	
+	friend		bool	x_locked(const Point &);
+	static		bool	x_locked(const Point &);
+			bool	x_locked()	const;
+	
 			float	x()		const;
 			void	x(float);
 	
-	friend		float	y(const Point &);
 			float	y()		const;
 			void	y(float);
 	
-	friend		float	z(const Point &);
+	friend		bool	y_locked(const Point &);
+	static		bool	y_locked(const Point &);
+			bool	y_locked()	const;
+	
 			float	z()		const;
 			void	z(float);
 
-			bool	point_locked()	const;
+	friend		bool	z_locked(const Point &);
+	static		bool	z_locked(const Point &);
+			bool	z_locked()	const;
+	
+	friend		void	lock_point(Point &, bool =true);
+	static		void	lock_point(Point &, bool =true);
 			void	lock_point(bool =true);
 
-			bool	x_locked()	const;
-			bool	y_locked()	const;
-			bool	z_locked()	const;
-
+	friend		void	lock_x(Point &, bool =true);
+	static		void	lock_x(Point &, bool =true);
 			void	lock_x(bool =true);	// lock to x-line //
+	
+	friend		void	lock_y(Point &, bool =true);
+	static		void	lock_y(Point &, bool =true);
 			void	lock_y(bool =true);	// lock to y-line //
+	
+	friend		void	lock_z(Point &, bool =true);
+	static		void	lock_z(Point &, bool =true);
 			void	lock_z(bool =true);	// lock to z-line //
 			// if all true, point remains constant //
-
+	
+	friend		void	remove_locks(Point &);
+	static		void	remove_locks(Point &);
 			void	remove_locks();
+	
+	friend		bool	auto_locked(const Point &);
+	static		bool	auto_locked(const Point &);
+			bool	auto_locked()	const;
+	
+	friend		void	auto_lock(Point &, bool =true);
+	static		void	auto_lock(Point &, bool =true);
+			void	auto_lock(bool =true);
+
 			void	scale_x(float);
 			void	scale_y(float);
 			void	scale_z(float);
@@ -290,11 +343,12 @@ static			void	lock_height(Rectangle &, bool =true);
 			Point	operator	 + (const Point &);
 			Point	operator	 - (const Point &);
 			Point	operator	 * (const Point &);
-		const	Point &	operator	 * (float);
+			Point 	operator	 * (float);
 
 		protected:
 			float	px, py, pz;
 			bool	lx, ly, lz;	// if ly is true, the value will be locked to the y-line // can not change x or z //
+			bool	auto_lock_set;
 						// if all are true, point can not move //
 		private:
 			bool	can_set_x()	const;
@@ -308,6 +362,9 @@ static			void	lock_height(Rectangle &, bool =true);
 	void		lock(Rectangle &, bool, bool);
 	void		lock_width(Rectangle &, bool);
 	void		lock_height(Rectangle &, bool);
+	void		remove_locks(Rectangle &);
+	bool		has_lock(const Rectangle &);
+
 	void		auto_lock(Rectangle &, bool);
 	bool		auto_locked(Rectangle &);
 
@@ -340,11 +397,18 @@ const	Rectangle &	scale(Rectangle &, const Rectangle &);
 		float	area(const Rectangle &);
 	
 
+		void	set(Point &, const Point &);
+		void	set(Point &, float, float, float);
 
 const	Point	&	scale(Point &, float);
 const	Point	&	scale(Point &, float, float, std::string);
 const	Point	&	scale(Point &, float, float, float);
 const	Point	&	scale(Point &, const Point &);
+
+		Point	copy_to_scale(const Point &, float);
+		Point	copy_to_scale(const Point &, float, float, float);
+		Point	copy_to_scale(const Point &, const Point &);
+
 
 		float	distance(const Point &, const Point &);
 		float	distance(const Point &, float, float, float);
@@ -352,7 +416,32 @@ const	Point	&	scale(Point &, const Point &);
 
 		float	product(const Point &, const Point &);
 		float	product(const Point &, float, float, float);
-	
+
+		Point	add(const Point &, const Point &);
+		Point	add(const Point &, float, float, float);
+	const	Point &	add_to(Point &, const Point &);
+	const	Point &	add_to(Point &, float, float, float);
+		
+		Point	sub(const Point &, const Point &);
+		Point	sub(const Point &, float, float, float);
+	const	Point &	sub_from(Point &, const Point &);
+	const	Point &	sub_from(Point &, float, float, float);
+
+		bool	x_locked(const Point &);
+		bool	y_locked(const Point &);
+		bool	z_locked(const Point &);
+
+		void	lock_x(Point &, bool);
+		void	lock_y(Point &, bool);
+		void	lock_z(Point &, bool);
+
+		void	remove_locks(const Point &);
+		bool	point_locked(const Point &);
+		void	lock_point(Point &, bool);
+
+		bool	auto_locked(const Point &);
+		void	auto_lock(Point &, bool);
+
 
 
 }

@@ -553,7 +553,7 @@ namespace	tsx{
 	return	u;
 	}
 
-	Rectangle
+	const Rectangle &
 	Rectangle::operator	*= ( float x ){
 		tsx::scale(*this,x);
 	return	*this;
@@ -567,11 +567,13 @@ namespace	tsx{
 	Point::Point()
 	: px(0.0f), py(0.0f), pz(0.0f){
 		lx = ly = lz = false;
+		auto_lock_set = false;
 	}
 
 	Point::Point(float X, float Y, float Z)
 	: px(X), py(Y), pz(Z){
 		lx = ly = lz = false;
+		auto_lock_set = false;
 	}
 
 	Point::Point(const Point & A){
@@ -582,6 +584,8 @@ namespace	tsx{
 		lx = A.x_locked();
 		ly = A.y_locked();
 		lz = A.z_locked();
+
+		auto_lock_set = A.auto_lock_set;
 	}
 
 	Point::~Point(){}
@@ -647,6 +651,59 @@ namespace	tsx{
 		return	new Point(a,b,c);
 	}
 
+	Point *
+	free_point(Point * at){
+		if( at is null )
+			return	null;
+
+		delete	at;
+	return	(at = null);
+	}
+
+	Point *
+	Point::free_point(Point * at){
+		return	tsx::free_point(at);
+	}
+
+	void
+	set(Point & at, const Point & place){
+		at.x( place.x() );
+		at.y( place.y() );
+		at.z( place.z() );
+
+		if( auto_locked(at) ){
+			tsx::lock_x(at, place.x_locked());
+			tsx::lock_y(at, place.y_locked());
+			tsx::lock_z(at, place.z_locked());
+		}
+	}
+
+	void
+	Point::set(Point & at, const Point & place){
+		tsx::set(at,place);
+	}
+
+	void
+	Point::set(const Point & place){
+		tsx::set(*this,place);
+	}
+
+	void
+	set(Point & at, float u, float v, float p){
+		Point place(u,v,p);
+		tsx::set(at,place);
+	}
+
+	void
+	Point::set(Point & at, float u, float v, float p){
+		tsx::set(at,u,v,p);
+	}
+
+	void
+	Point::set(float u, float v, float p){
+		tsx::set(*this,u,v,p);
+	}
+
 	Point
 	add(const Point & a, const Point & b){
 		Point c( a.x() + b.x(), a.y() + b.y(), a.z() + b.z() );
@@ -668,7 +725,7 @@ namespace	tsx{
 		return	tsx::add(a,b);
 	}
 
-	const Point &
+	Point
 	Point::add(const Point & b)
 	const{
 		return	tsx::add(*this,b);
@@ -689,10 +746,48 @@ namespace	tsx{
 		return	tsx::add(A,a,b,c);
 	}
 
-	const Point &
+	Point
 	Point::add(float a, float b, float c)
 	const{
 		return	tsx::add(*this,a,b,c);
+	}
+
+	Point
+	sub(const Point & A, const Point & B){
+		Point	C(A);
+		C.x( C.x() - B.x() );
+		C.y( C.y() - B.y() );
+		C.z( C.z() - B.z() );
+	return	C;
+	}
+
+	Point
+	Point::sub(const Point & A, const Point & B){
+		return	tsx::sub(A,B);
+	}
+
+	Point
+	Point::sub(const Point & A)
+	const{
+		return	tsx::sub(*this,A);
+	}
+
+	const Point &
+	sub_from(Point & A, const Point & B){
+		A.x( A.x() - B.x() );
+		A.y( A.y() - B.y() );
+		A.z( A.z() - B.z() );
+	return	A;
+	}
+
+	const Point &
+	Point::sub_from(Point & A, const Point & B){
+		return	tsx::sub_from(A,B);
+	}
+
+	const Point &
+	Point::sub_from(const Point & A){
+		return	tsx::sub_from(*this,A);
 	}
 
 	const Point &
@@ -814,10 +909,6 @@ namespace	tsx{
 		return	tsx::product(*this,a);
 	}
 
-	void
-	test_func()
-	{std::cout << "Testing" << std::endl;}
-
 	float
 	distance(const Point & A, const Point & B){
 		float	dx = A.x() - B.x();
@@ -877,17 +968,8 @@ namespace	tsx{
 	float
 	Point::magnitude()
 	const{return	magnitude(*this);}
-
-	// end friends and statics //
 	
-	bool
-	Point::point_locked()
-	const{return ( (lx is true) and (ly is true) and (lz is true) );}
-
-	void
-	Point::lock_point(bool lock){
-		lx = ly = lz = lock;
-	}
+	// end friends and statics //
 
 	float
 	Point::x()
@@ -924,17 +1006,67 @@ namespace	tsx{
 	const{return lx;}
 
 	bool
+	Point::x_locked(const Point & at){
+		return	at.x_locked();
+	}
+
+	bool
+	x_locked(const Point & at){
+		return	at.x_locked();
+	}
+
+	bool
 	Point::y_locked()
 	const{return ly;}
+
+	bool
+	Point::y_locked(const Point & at){
+		return at.y_locked();
+	}
+
+	bool
+	y_locked(const Point & at){
+		return	at.y_locked();
+	}
 
 	bool
 	Point::z_locked()
 	const{return lz;}
 
+	bool
+	Point::z_locked(const Point & at){
+		return	at.z_locked();
+	}
+
+	bool
+	z_locked(const Point & at){
+		return	at.z_locked();
+	}
+
 
 	void
 	Point::lock_x(bool lock)
 	{lx=lock;}
+
+	void
+	lock_x(Point & x, bool lock){
+		x.lock_x(lock);
+	}
+
+	void
+	Point::lock_x(Point & at, bool l){
+		return	tsx::lock_x(at,l);
+	}
+
+	void
+	lock_y(Point & at, bool l){
+		return	at.lock_y(l);
+	}
+
+	void
+	Point::lock_y(Point & at, bool l){
+		return	tsx::lock_y(at,l);
+	}
 
 	void
 	Point::lock_y(bool lock)
@@ -945,8 +1077,149 @@ namespace	tsx{
 	{lz=lock;}
 
 	void
+	lock_z(Point & at, bool lock){
+		at.lock_z(lock);
+	}
+	
+	void
+	Point::lock_z(Point & at, bool l){
+		tsx::lock_z(at,l);
+	}
+
+	void
+	remove_locks(Point & at){
+		at.remove_locks();
+	}
+
+	void
+	Point::remove_locks(Point & at){
+		tsx::remove_locks(at);
+	}
+
+	void
 	Point::remove_locks(){
 		lx = ly = lz = false;
+	}
+
+	bool
+	Point::point_locked()
+	const{
+		return( (lx is true) or (ly is true) or (lz is true) );
+	}
+
+	bool
+	point_locked(const Point & at){
+		return	at.point_locked();
+	}
+
+	bool
+	Point::point_locked(const Point & at){
+		return	tsx::point_locked(at);
+	}
+
+	bool
+	Point::auto_locked()
+	const{
+		return	(auto_lock_set is true);
+	}
+
+	bool
+	auto_locked(const Point & at){
+		return	at.auto_locked();
+	}
+
+	bool
+	Point::auto_locked(const Point & at){
+		return	tsx::auto_locked(at);
+	}
+
+	void
+	Point::auto_lock(bool v){
+		auto_lock_set = v;
+	}
+
+	void
+	auto_lock(Point & at, bool v){
+		at.auto_lock(v);
+	}
+
+	void
+	Point::auto_lock(Point & at, bool v){
+		tsx::auto_lock(at,v);
+	}
+
+
+
+	bool
+	Point::operator	== (const Point & at){
+		if( x() isnot at.x() )
+			return	false;
+	else	if( y() isnot at.y() )
+			return	false;
+	else	if( z() isnot at.z() )
+			return	false;
+	else	if( x_locked() isnot x_locked(at) )
+			return	false;
+	else	if( y_locked() isnot y_locked(at) )
+			return	false;
+	else	if( z_locked() isnot z_locked(at) )
+			return	false;
+		else	return	true;
+	}
+
+	bool
+	Point::operator != (const Point & at){
+		return	( (*this is at) isnot true );
+	}
+
+	const Point &
+	Point::operator	 = (const Point & at){
+		tsx::set(*this,at);
+	return	*this;
+	}
+
+	Point
+	Point::operator	 + (const Point & at){
+		return	tsx::add(*this,at);
+	}
+
+	const Point &
+	Point::operator	+= (const Point & at){
+		return	tsx::add_to(*this,at);
+	}
+
+	Point
+	Point::operator	 - (const Point & at){
+		return	tsx::sub(*this,at);
+	}
+
+	const Point &
+	Point::operator	-= (const Point & at){
+		return	tsx::sub_from(*this,at);
+	}
+
+	Point
+	Point::operator	 * (const Point & at){
+		Point place(*this);
+		tsx::scale(place,at);
+	return	place;
+	}
+
+	Point
+	Point::operator	 * (float x){
+		Point place(*this);
+		tsx::scale(place,x);
+	return	place;
+	}
+
+	const Point &
+	Point::operator *= (float x){
+		return	tsx::scale(*this,x);
+	}
+
+	const Point &
+	Point::operator	*= (const Point & at){
+		return	tsx::scale(*this,at);
 	}
 
 
