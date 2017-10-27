@@ -1,22 +1,18 @@
 #include <tsx/prefix.h>
 #include <tsx/geometry.h>
+#include <tsx/display.h>
 
 int main(int argc, char ** argv){
 	
-	tsx::Rectangle	A	= tsx::Rectangle::create(10,12);
-	tsx::Rectangle	B	= tsx::Rectangle::create(5,4);
+	tsx::xDisplay	server;
+	tsx::Rectangle	geometry;
 
-	A.lock_width(true);
-	B.lock_height(true);
+	server.connect();
 
-	tsx::set(A, 11,9);
-	tsx::set(B, 9,11 );
-
-	A.remove_locks();
-	B.remove_locks();
+	geometry = server.geometry();
 	
-	std::cout << "A: (" << A.width() << "," << A.height() << ")" << std::endl;
-	std::cout << "B: (" << B.width() << "," << B.height() << ")" << std::endl;
+	std::cout << "Screen Size:	(" << geometry.width() << "," << geometry.height() << ")" << std::endl;
+	std::cout << "Screen Numb:	 " << server.screen_number() << std::endl;
 	
 return	0;
 }
