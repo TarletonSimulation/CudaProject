@@ -46,17 +46,18 @@ namespace	tsx{
 
 	bool
 	auto_locked(const Rectangle & rect){
-		return	( rect.auto_lock_set is true );
+		return	rect.auto_locked();
 	}
 
 	bool
 	Rectangle::auto_locked(const Rectangle & rect){
-		return	tsx::auto_locked(rect);
+		return	rect.auto_locked();
 	}
 
 	bool
-	Rectangle::auto_locked(){
-		return	tsx::auto_locked(*this);
+	Rectangle::auto_locked()
+	const{
+		return	(auto_lock_set is true);
 	}
 
 	float
@@ -116,7 +117,8 @@ namespace	tsx{
 	}
 
 	Rectangle
-	Rectangle::copy_to_scale(float x, float y){
+	Rectangle::copy_to_scale(float x, float y)
+	const{
 		return	tsx::copy_to_scale(*this,x,y);
 	}
 
@@ -143,7 +145,7 @@ namespace	tsx{
 	set( Rectangle & A, const Rectangle & B ){
 		set(A,B.width(),B.height());
 		
-		if( auto_locked(A) is true ){
+		if( A.auto_locked() is true ){
 			A.lock_width( B.width_locked() );
 			A.lock_height( B.height_locked() );
 		}
@@ -331,12 +333,12 @@ namespace	tsx{
 
 	void
 	lock_width(Rectangle & A, bool lock){
-		A.lock_width(lock);
+		Rectangle::lock_width(A,lock);
 	}
 
 	void
 	lock_height(Rectangle & A, bool lock){
-		A.lock_height(lock);
+		Rectangle::lock_height(A,lock);
 	}
 
 	void
@@ -351,12 +353,28 @@ namespace	tsx{
 
 	void
 	Rectangle::lock_width(Rectangle & A, bool l){
-		tsx::lock_width(A,l);
+		A.w_lock = l;
 	}
 
 	void
 	Rectangle::lock_height(Rectangle & A, bool l){
-		tsx::lock_height(A,l);
+		A.h_lock = l;
+	}
+
+	bool
+	has_lock(const Rectangle & A){
+		return	A.has_lock();
+	}
+
+	bool
+	Rectangle::has_lock(const Rectangle & A){
+		return	A.has_lock();
+	}
+
+	bool
+	Rectangle::has_lock()
+	const{
+		return	( (w_lock is true) or (h_lock is true) );
 	}
 
 	// end statics and friend functions //
@@ -453,22 +471,6 @@ namespace	tsx{
 	float
 	Rectangle::height()
 	const{return	h;}
-
-	void
-	Rectangle::rectangle(float W, float H){
-		if( w_lock is false )
-			w = W;
-		if( h_lock is false )
-			h = H;
-	}
-
-	void
-	Rectangle::rectangle(const Rectangle & rect){
-		rectangle(rect.w, rect.h);
-
-		w_lock = rect.w_lock;
-		h_lock = rect.h_lock;
-	}
 
 	const Rectangle &
 	Rectangle::rectangle()

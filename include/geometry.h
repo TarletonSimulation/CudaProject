@@ -29,11 +29,11 @@ static		Rectangle *	free_rectangle(Rectangle *);
 	// for inheritance purposes and ease of use for the programmer //
 friend		void		set(Rectangle &, float, float);
 static		void		set(Rectangle &, float, float);
-		void		set(float, float)	const;
+		void		set(float, float);
 
 friend		void		set(Rectangle &, const Rectangle &);
 static		void		set(Rectangle &, const Rectangle &);
-		void		set(const Rectangle &)	const;
+		void		set(const Rectangle &);
 
 friend		float		area(const Rectangle &);
 static		float		area(const Rectangle &);
@@ -42,10 +42,12 @@ static		float		area(const Rectangle &);
 friend		float		width(const Rectangle &);
 static		float		width(const Rectangle &);
 		float		width()	const;
+		void		width(float);
 
 friend		float		height(const Rectangle &);
 static		float		height(const Rectangle &);
 		float		height() const;
+		void		height(float);
 
 static		bool		width_locked(const Rectangle &);
 friend		bool		width_locked(const Rectangle &);
@@ -98,6 +100,7 @@ static		Rectangle	copy_to_scale(const Rectangle &, float, float);
 friend			bool	auto_locked(const Rectangle &);
 static			bool	auto_locked(const Rectangle &);
 			bool	auto_locked()		const;
+
 friend			void	auto_lock(Rectangle &, bool =true);
 static			void	auto_lock(Rectangle &, bool =true);
 			void	auto_lock(bool =true);
@@ -118,9 +121,9 @@ friend			void	remove_locks(Rectangle &);
 static			void	remove_locks(Rectangle &);
 			void	remove_locks();
 
-friend			bool	has_locks(Rectangle &);
-static			bool	has_locks(Rectangle &);
-			bool	has_locks() const;
+friend			bool	has_lock(const Rectangle &);
+static			bool	has_lock(const Rectangle &);
+			bool	has_lock() const;
 
 friend			void	lock_width(Rectangle &, bool =true);
 static			void	lock_width(Rectangle &, bool =true);
@@ -308,6 +311,10 @@ static			void	lock_height(Rectangle &, bool =true);
 	void		auto_lock(Rectangle &, bool);
 	bool		auto_locked(Rectangle &);
 
+	bool		width_locked(const Rectangle &);
+	bool		height_locked(const Rectangle &);
+	bool		has_lock(const Rectangle &);
+
 	Rectangle	add(const Rectangle &, const Rectangle &);
 	Rectangle	add(const Rectangle &, float, float);
 const	Rectangle &	add_to(Rectangle &, const Rectangle &);
@@ -330,6 +337,7 @@ const	Rectangle &	scale(Rectangle &, const Rectangle &);
 		
 		float	perimeter(const Rectangle &);
 		float	magnitude(const Rectangle &);
+		float	area(const Rectangle &);
 	
 
 
