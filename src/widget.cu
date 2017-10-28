@@ -27,10 +27,25 @@ namespace	tsx{
 
 	Widget::Widget()
 	:	widget_base(){
+		wparent	= null;
 	}
 
 	Widget::~Widget(){
 	}
+
+	
+	const Widget &
+	Widget::widget()
+	const{return *this;}
+
+	Widget &
+	Widget::widget_ref()
+	{return	*this;}
+
+	Widget *
+	Widget::widget_pointer()
+	{return	this;}
+
 
 	bool
 	Widget::create_action(const std::string & title, Handler::Caller caller, void * a, void * b){
@@ -39,6 +54,11 @@ namespace	tsx{
 		}
 		xactions.push_back( Action::create_action_pointer(title, caller, this, a, b) );
 	return	true;
+	}
+
+	bool
+	Widget::destroy_action(const std::string & action){
+		return	false;
 	}
 
 
@@ -52,6 +72,28 @@ namespace	tsx{
 			}
 		return	false;
 		}else	xactions.push_back( Action::create_action_pointer(title, caller, this, data, edata) );
+	return	true;
+	}
+
+	bool
+	Widget::disconnect_action(const std::string & action, Handler::Caller caller){
+		return	false;
+	}
+
+	const Widget::ActionList &
+	Widget::actions()
+	const{
+		return	xactions;
+	}
+
+	Widget::ActionList &
+	Widget::actions_ref(){
+		return	xactions;
+	}
+
+	Widget::ActionList *
+	Widget::actions_pointer(){
+		return	&xactions;
 	}
 
 	uint

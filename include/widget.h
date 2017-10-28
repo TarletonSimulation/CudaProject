@@ -33,6 +33,7 @@ namespace	tsx{
 		public	Action{
 		public:
 					 Widget();
+					 Widget(const Rectangle &,const Point &);
 					~Widget();
 
 	typedef	std::list<Action *>	ActionList;
@@ -53,9 +54,10 @@ namespace	tsx{
 			Widget	*	widget_pointer();
 			Widget	&	widget_ref();
 
-	std::list<int>	operator	()(const std::string &);
+virtual	std::list<int>	operator	()(const std::string &);
 
 		protected:
+			Widget	*	wparent;
 			bool		connect_display(xDisplay *);
 			void		remove_display();
 
@@ -71,8 +73,8 @@ namespace	tsx{
 		public:
 	typedef	std::list<Widget *>	WidgetList;
 
-					 Window();
-					~Window();
+					 Window(){}
+					~Window(){}
 
 		const	Window	&	window()	const;
 			Window	*	window_pointer();
