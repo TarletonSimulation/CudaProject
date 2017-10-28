@@ -9,6 +9,13 @@ namespace	tsx{
 		call	= null;
 	}
 
+	Handler::Handler(Caller cb, void *a, void *b, void *c){
+		call	= cb;
+		p1	= a;
+		p2	= b;
+		p3	= c;
+	}
+
 	Handler::~Handler(){
 		clear();
 	}
@@ -77,6 +84,70 @@ namespace	tsx{
 	bool
 	Handler::operator != (const Handler & action){
 		return	( (*this is action) isnot true );
+	}
+
+
+
+
+
+	Action::Action(){}
+
+	Action::~Action(){}
+
+
+
+	bool
+	Action::connect(Handler::Caller cb, void * a, void * b, void * c){
+		if( count() lt 1 ){
+			hlist.push_back( Handler(cb,a,b,c) );
+			return	true;
+		}else{
+			Handler locl(cb,a,b,c);
+			for(
+				HandlerList::iterator item = hlist.begin();
+				item != hlist.end(); ++item
+			){
+				if( *item is locl ){
+					std::cout << "Previous callback found" << std::endl;
+					return	false;
+				}
+			}
+
+			hlist.push_back( Handler(cb,a,b,c) );
+		return	true;
+		}
+	}
+
+
+	uint
+	Action::count()
+	const{return	hlist.size();}
+
+	std::string
+	Action::name()
+	const{return	title;}
+
+	Action::OrderList
+	Action::callorder()
+	const{return	olist;}
+
+
+	std::list<int>
+	Action::operator ()(void){
+		std::list<int>	rv;
+
+		if( count() lt 1 )
+			rv.push_back(-1);
+		else{
+			for(
+				HandlerList::iterator item = hlist.begin();
+				item != hlist.end(); ++item
+			){
+				(*item)();
+			}
+		}
+
+	return	rv;
 	}
 
 }

@@ -19,6 +19,15 @@ static	int foo(void * a, void * b, void * c){
 		x->print_pos();
 	return	0;
 	}
+
+static	int bar(void * a, void * b, void * c){
+		Test  * x = (Test *)a;
+		float * y = (float *)b;
+		float * z = (float *)c;
+
+		x->Point::set(*y,*z);
+	return	0;
+	}
 	
 	void	print_size(){
 		printf("Size: (%.2f,%.2f)\n", tsx::Rectangle::width(), tsx::Rectangle::height());
@@ -36,15 +45,18 @@ private:
 
 int main(int argc, char ** argv){
 	
-	tsx::Handler	call;
+	tsx::Action	action;
 	Test		test;
 
-	call.set(Test::foo, &test, null, null);
+	float	x,y;
 
-	tsx::set(test.rectangle_ref(), 1.2f, 2.3f);
-	tsx::set(test.point_ref(), 0.1f, 1.2f);
+	x = 12.0f;
+	y = 1.0f;
 
-	call();
+	action.connect(Test::bar, &test, &x, &y);
+	action.connect(Test::foo, &test, null, null);
+
+	action();
 
 return	0;
 }

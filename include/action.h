@@ -24,7 +24,6 @@ namespace	tsx{
 
 	bool	operator	== (const Handler &);
 	bool	operator	!= (const Handler &);
-const Handler &	operator	 = (const Handler &);
 
 	protected:
 		Caller		call;
@@ -38,18 +37,24 @@ const Handler &	operator	 = (const Handler &);
 	class	Action{
 	public:
 typedef	std::list<Handler>	HandlerList;
-typedef	std::list<int>		OrderList;
+typedef	std::list<uint>		OrderList;
 
 				 Action();
 				~Action();
 
 		bool		connect(Handler::Caller, void *, void *, void *);
 		bool		disconnect(Handler::Caller);
-			
-		int		count();
-		std::string	name();
+		
+		// ordered list must be the same size as count //
+		bool		assign_callorder(OrderList);
+		OrderList	callorder()	const;
 
-std::list<int>	operator	[] (uint);
+		uint		count()	const;
+
+		void		name(const std::string &);
+		std::string	name()	const;
+
+std::list<int>	operator	() (void);
 	bool	operator	== (const Action &);
 	bool	operator	!= (const Action &);
 const Action &	operator	 = (const Action &);
