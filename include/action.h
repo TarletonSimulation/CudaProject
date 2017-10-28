@@ -44,13 +44,13 @@ typedef	std::list<uint>		OrderList;
 				 Action();
 				~Action();
 	
-	static	OrderList	Unordered();	// just returns an list containing the unsigned int of -1 // max unsigned integer //
+	static	OrderList	Unordered();	// just returns an list with max unsigned int // (unsigned int)(-1) //
 
-	static	Action		create_action(Handler::Caller, void *, void *, void *);
-	static	Action		create_action(HandlerList, OrderList);
+	static	Action		create_action(const std::string &, Handler::Caller, void *, void *, void *);
+	static	Action		create_action(const std::string &, HandlerList, OrderList);
 
-	static	Action	*	create_action_pointer(Handler::Caller, void *, void *, void *);
-	static	Action	*	create_action_pointer(HandlerList, OrderList);
+	static	Action	*	create_action_pointer(const std::string &, Handler::Caller, void *, void *, void *);
+	static	Action	*	create_action_pointer(const std::string &, HandlerList, OrderList);
 
 		bool		connect(Handler::Caller, void *, void *, void *);
 		bool		disconnect(Handler::Caller);
@@ -62,7 +62,7 @@ typedef	std::list<uint>		OrderList;
 
 		uint		count()	const;
 
-		void		name(const std::string &);
+		bool		name(const std::string &);
 		std::string	name()	const;
 
 std::list<int>	operator	() (void);
@@ -81,6 +81,23 @@ const Action &	operator	 = (const Action &);
 		OrderList	olist;
 	private:
 	};
+
+
+
+
+	class	Signal{
+		public:
+				 Signal();
+				~Signal();
+
+		std::list<int>	dispatch(const std::string &, std::list<Action *> &);
+		
+		protected:
+		private:
+	};
+
+
+
 
 }
 

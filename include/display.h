@@ -70,6 +70,7 @@ namespace	tsx{
 	bool			created;
 	bool			mapped;
 	bool			update;
+	bool			active;
 	};
 
 

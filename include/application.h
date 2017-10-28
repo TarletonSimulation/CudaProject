@@ -7,7 +7,8 @@
 namespace	tsx{
 	
 	class	Application
-	:	public	Widget{
+	:	public	Widget,
+		public	xDisplay{
 		public:
 				 Application(int, char **);
 				~Application();
@@ -15,6 +16,10 @@ namespace	tsx{
 		std::string *	argv();
 			int	argc();
 
+			bool	running()	const;
+
+			bool	start();	// main loop //
+			bool	stop();
 
 		protected:
 			bool	xrun;

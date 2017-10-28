@@ -102,6 +102,29 @@ namespace	tsx{
 	return	no_order;
 	}
 
+	
+	Action
+	Action::create_action(const std::string & ttl, Handler::Caller cb, void * a, void * b, void * c){
+		Action	act;
+			
+		act.name(ttl);
+		act.connect(cb,a,b,c);
+
+	return	act;
+	}
+
+	Action *
+	Action::create_action_pointer(const std::string & ttl, Handler::Caller cb, void * a, void * b, void * c){
+		Action * pointer = new Action;
+
+		pointer->name(ttl);
+		pointer->connect(cb, a, b, c);
+
+	return	pointer;
+	}
+
+
+
 	bool
 	Action::connect(Handler::Caller cb, void * a, void * b, void * c){
 		if( count() lt 1 ){
@@ -132,6 +155,14 @@ namespace	tsx{
 	std::string
 	Action::name()
 	const{return	group;}
+
+	bool
+	Action::name(const std::string & title){
+		if( group is "" )
+			group = title;
+		else	return	false;
+	return	true;
+	}
 
 	Action::OrderList
 	Action::callorder()

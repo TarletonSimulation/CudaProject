@@ -16,32 +16,69 @@ namespace	tsx{
 
 			bool	showing()	const;
 			bool	created()	const;
+			bool	active()	const;
 
-			void	hide();
-			void	destroy();
-
-			int	on_key_press();
-			int	on_key_release();
-
-			int	on_button_press();
-			int	on_button_release();
-
-			int	on_expose();
-
-			bool	needs_reconf();
-			bool	needs_resize();
-			bool	needs_repos();
+			ulong	win_id()	const;		// XServer window id //
+			ulong	pwin_id()	const;		// XServer parent window id //
+			XID	rwin_id()	const;		// XServer window resource id //
 		protected:
 		private:
+		Rectangle	max_g, min_g;	// max and min geometry of window // not controlled by XServer //
+		Point		max_p, min_p;	// max and min position of window //
 	};
 
 
 	class	Widget
-	:	public	widget_base{
+	:	public	widget_base,
+		public	Action{
 		public:
-				 Widget();
-				~Widget();
+					 Widget();
+					~Widget();
+
+	typedef	std::list<Action *>	ActionList;
+		
+			bool		create_action(const std::string &, Handler::Caller, void *, void * =null);
+			bool		destroy_action(const std::string &);
+
+			uint		action_count()	const;
+
+		const	ActionList &	actions()	const;
+			ActionList &	actions_ref();
+			ActionList *	actions_pointer();
+
+			bool		connect_action(const std::string &, Handler::Caller, void *, void * =null);
+			bool		disconnect_action(const std::string &, Handler::Caller);
+
+		const	Widget	&	widget()	const;
+			Widget	*	widget_pointer();
+			Widget	&	widget_ref();
+
+	std::list<int>	operator	()(const std::string &);
+
 		protected:
+			bool		connect_display(xDisplay *);
+			void		remove_display();
+
+			xDisplay *	xdisplay;
+			ActionList	xactions;
+		private:
+	};
+
+
+
+	class	Window
+	:	public	Widget{
+		public:
+	typedef	std::list<Widget *>	WidgetList;
+
+					 Window();
+					~Window();
+
+		const	Window	&	window()	const;
+			Window	*	window_pointer();
+			Window	&	window_ref();
+		protected:
+			WidgetList	wlist;
 		private:
 	};
 
