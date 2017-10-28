@@ -11,6 +11,14 @@ extern "C"{
 #include <X11/Xatom.h>
 #include <X11/keysym.h>
 #include <X11/keysymdef.h>
+
+#include <cairo/cairo.h>
+#include <cairo/cairo-xlib.h>
+#include <cairo/cairo-xlib-xrender.h>
+
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glx.h>
 }
 
 namespace	tsx{
@@ -20,20 +28,22 @@ namespace	tsx{
 				 xDisplay(const std::string & ="");
 				~xDisplay();
 
-			bool	connect(const std::string &);
-			bool	connect();
-			bool	connected();
-			int	connection();
-			bool	disconnect();
+			void	connect(const std::string &);
+			void	connect();
+			void	disconnect();
 
-		std::string	server_name();
-		std::string	screen_name();
-			int	screen_number();
-			int	screen_count();
+			bool	connected()		const;
+			int	connection()		const;
+
+		std::string	server_name()		const;
+		std::string	screen_name()		const;
+			int	screen_number()		const;
+			int	screen_count()		const;
 
 	const	Rectangle &	geometry();
-		Window		root();
-		Display	*	display_pointer();
+		Window		root()			const;
+		Display	*	display_pointer()	const;
+		Screen	*	screen_pointer()	const;
 
 	protected:
 		Rectangle	xgeom;	// display size
@@ -47,20 +57,19 @@ namespace	tsx{
 	};
 
 
-
-	class	xInfo
-	:	public	Rectangle,
-		public	Point{
-	public:
-				 xInfo();
-				~xInfo();
-			
-			bool	set_display( xDisplay & );
-	protected:
-		Window		xwindow;
-		xDisplay *	xserver;
-		Visual	*	xvisual;
-	private:
+	struct	winfo_t{
+	cairo_t		*	cairo;
+	cairo_surface_t	*	cairo_surface;
+	Window			window;
+	Rectangle		geometry;
+	Point			at;
+	Colormap		colormap;
+	XVisualInfo	*	vis_info;
+	GLint		*	gl_iarr;
+	GLfloat		*	gl_farr;
+	bool			created;
+	bool			mapped;
+	bool			update;
 	};
 
 

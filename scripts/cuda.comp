@@ -52,7 +52,7 @@ then
 	
 	if [ -f lib/$LibTsx ]
 	then
-		echo "Cuda Library Built"
+		echo "TSX Library Built"
 		LibTsx="$CudaProject/lib/$LibTsx"
 	else	LibTsx=""
 	fi

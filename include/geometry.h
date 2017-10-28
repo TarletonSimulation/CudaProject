@@ -188,40 +188,40 @@ static			void	lock_height(Rectangle &, bool =true);
 	static		void	set(Point &, const Point &);
 			void	set(const Point &);
 	
-	friend		void	set(Point &, float, float, float);
-	static		void	set(Point &, float, float, float);
-			void	set(float, float, float);
+	friend		void	set(Point &, float, float, float =0.0f);
+	static		void	set(Point &, float, float, float =0.0f);
+			void	set(float, float, float =0.0f);
 	
 	friend		Point	add(const Point &, const Point &);
-	friend		Point	add(const Point &, float, float, float);
+	friend		Point	add(const Point &, float, float, float =0.0f);
 	static		Point	add(const Point &, const Point &);
-	static		Point	add(const Point &, float, float, float);
+	static		Point	add(const Point &, float, float, float =0.0f);
 			Point	add(const Point &) const;
-			Point	add(float, float, float) const;
+			Point	add(float, float, float =0.0f) const;
 
 	friend	const	Point &	add_to(Point &, const Point &);
 	static	const	Point &	add_to(Point &, const Point &);
 		const	Point & add_to(const Point &);
 
-	friend	const	Point &	add_to(Point &, float, float, float);
-	static	const	Point &	add_to(Point &, float, float, float);
-		const	Point & add_to(float, float, float);
+	friend	const	Point &	add_to(Point &, float, float, float =0.0f);
+	static	const	Point &	add_to(Point &, float, float, float =0.0f);
+		const	Point & add_to(float, float, float =0.0f);
 
 	friend		Point	sub(const Point &, const Point &);
 	static		Point	sub(const Point &, const Point &);
 			Point	sub(const Point &) const;
 
-	friend		Point	sub(const Point &, float, float, float);
-	static		Point	sub(const Point &, float, float, float);
-			Point	sub(float, float, float) const;
+	friend		Point	sub(const Point &, float, float, float =0.0f);
+	static		Point	sub(const Point &, float, float, float =0.0f);
+			Point	sub(float, float, float =0.0f) const;
 
 	friend	const	Point &	sub_from(Point &, const Point &);
 	static	const	Point &	sub_from(Point &, const Point &);
 		const	Point &	sub_from(const Point &);
 		
-	friend	const	Point &	sub_from(Point &, float, float, float);
-	static	const	Point &	sub_from(Point &, float, float, float);
-		const	Point &	sub_from(float, float, float);
+	friend	const	Point &	sub_from(Point &, float, float, float =0.0f);
+	static	const	Point &	sub_from(Point &, float, float, float =0.0f);
+		const	Point &	sub_from(float, float, float =0.0f);
 
 	friend	const	Point &	scale(Point &, float);			// mult all //
 	static	const	Point &	scale(Point &, float);
@@ -231,9 +231,9 @@ static			void	lock_height(Rectangle &, bool =true);
 	static	const	Point & scale(Point &, float, float, std::string ="xy");
 		const	Point &	scale(float, float, std::string ="xy");
 
-	friend	const	Point &	scale(Point &, float, float, float);	// mult individual //
-	static	const	Point & scale(Point &, float, float, float);
-		const	Point &	scale(float, float, float);
+	friend	const	Point &	scale(Point &, float, float, float =1.0f);	// mult individual //
+	static	const	Point & scale(Point &, float, float, float =1.0f);
+		const	Point &	scale(float, float, float =1.0f);
 
 	friend	const	Point &	scale(Point &, const Point &);		// point scale //
 	static	const	Point & scale(Point &, const Point &);
@@ -243,9 +243,9 @@ static			void	lock_height(Rectangle &, bool =true);
 	static		Point	copy_to_scale(const Point &, float);
 			Point	copy_to_scale(float)	const;
 			
-	friend		Point	copy_to_scale(const Point &, float, float, float);
-	static		Point	copy_to_scale(const Point &, float, float, float);
-			Point	copy_to_scale(float, float, float) const;
+	friend		Point	copy_to_scale(const Point &, float, float, float =1.0f);
+	static		Point	copy_to_scale(const Point &, float, float, float =1.0f);
+			Point	copy_to_scale(float, float, float =1.0f) const;
 
 	friend		Point	copy_to_scale(const Point &, const Point &);
 	static		Point	copy_to_scale(const Point &, const Point &);
@@ -255,17 +255,17 @@ static			void	lock_height(Rectangle &, bool =true);
 	static		float	product(const Point &, const Point &);	// local static //
 			float	product(const Point &)	const;		// local non-static //
 	
-	friend		float	product(const Point &, float, float, float);
-	static		float	product(const Point &, float, float, float);
-			float	product(float, float, float) const;
+	friend		float	product(const Point &, float, float, float =1.0f);
+	static		float	product(const Point &, float, float, float =1.0f);
+			float	product(float, float, float =1.0f) const;
 
 	friend		float	distance(const Point &, const Point &);
 	static		float	distance(const Point &, const Point &);
 			float	distance(const Point &) const;
 
-	friend		float	distance(const Point &, float, float, float);
-	static		float	distance(const Point &, float, float, float);
-			float	distance(float, float, float) const;
+	friend		float	distance(const Point &, float, float, float =0.0f);
+	static		float	distance(const Point &, float, float, float =0.0f);
+			float	distance(float, float, float =0.0f) const;
 	
 	friend		float	magnitude(const Point &);
 	static		float	magnitude(const Point &);
