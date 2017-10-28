@@ -16,6 +16,9 @@ namespace	tsx{
 
 	void
 	xDisplay::connect(){
+		// for the moment disallow multiple connections to the XServer //
+		if( connected() is true )	return;
+
 		if( (xname is "") )
 			xname = "DISPLAY";
 		

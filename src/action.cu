@@ -48,7 +48,7 @@ namespace	tsx{
 	}
 
 	int
-	Handler::operator ()(void * a, void * b, void * c){
+	Handler::operator ()(void *& a, void *& b, void *& c){
 		p1 = a;
 		p2 = b;
 		p3 = c;
@@ -56,14 +56,14 @@ namespace	tsx{
 	}
 
 	int
-	Handler::operator ()(void * b, void * c){
+	Handler::operator ()(void *& b, void *& c){
 		p2 = b;
 		p3 = c;
 	return	(*this)();
 	}
 
 	int
-	Handler::operator ()(void * c){
+	Handler::operator ()(void *& c){
 		p3 = c;
 	return	(*this)();
 	}
@@ -90,11 +90,17 @@ namespace	tsx{
 
 
 
-	Action::Action(){}
+	Action::Action(){
+	}
 
 	Action::~Action(){}
 
-
+	
+	Action::OrderList
+	Action::Unordered(){
+		OrderList	no_order(-1);
+	return	no_order;
+	}
 
 	bool
 	Action::connect(Handler::Caller cb, void * a, void * b, void * c){
@@ -125,7 +131,7 @@ namespace	tsx{
 
 	std::string
 	Action::name()
-	const{return	title;}
+	const{return	group;}
 
 	Action::OrderList
 	Action::callorder()
@@ -142,8 +148,24 @@ namespace	tsx{
 			for(
 				HandlerList::iterator item = hlist.begin();
 				item != hlist.end(); ++item
+			){ rv.push_back( (*item)() );}
+		}
+
+	return	rv;
+	}
+
+	std::list<int>
+	Action::operator ()(void *& a, void *& b, void *& c){
+		std::list<int> rv;
+
+		if( count() lt 1 )
+			rv.push_back(-1);
+		else{
+			for(
+				HandlerList::iterator item = hlist.begin();
+				item != hlist.end(); ++item
 			){
-				(*item)();
+				rv.push_back( (*item)(a,b,c) );
 			}
 		}
 

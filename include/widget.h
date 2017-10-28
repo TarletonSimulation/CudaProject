@@ -31,7 +31,17 @@ namespace	tsx{
 			bool	needs_reconf();
 			bool	needs_resize();
 			bool	needs_repos();
+		protected:
+		private:
+	};
 
+
+	class	Widget
+	:	public	widget_base{
+		public:
+				 Widget();
+				~Widget();
+		protected:
 		private:
 	};
 
