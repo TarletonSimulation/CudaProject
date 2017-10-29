@@ -1,4 +1,4 @@
-In src/
+src/
 	
 	+ Rectangle Class
 	*	restrict width and height final values to gte 0
@@ -20,7 +20,7 @@ In src/
 	*	+ basic widgets
 	*	+ surfaces, fonts
 
-In scripts/
+scripts/
 	
 	+ Compilation script
 	*	+ stat file for last modification time, to speed up compilation by not compiling sources that have already been built +
