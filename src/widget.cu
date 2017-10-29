@@ -15,6 +15,7 @@ namespace	tsx{
 		winfo_t::created	= false;
 		winfo_t::mapped		= false;
 		winfo_t::update		= false;
+		winfo_t::blocking	= false;
 	}
 
 	widget_base::~widget_base(){}
@@ -25,12 +26,15 @@ namespace	tsx{
 
 
 
-	Widget::Widget()
+	Widget::Widget(xDisplay * server)
 	:	widget_base(){
 		wparent	= null;
+		xdisplay= server;
 	}
 
 	Widget::~Widget(){
+		xdisplay = null;
+		wparent = null;
 	}
 
 	
@@ -45,6 +49,12 @@ namespace	tsx{
 	Widget *
 	Widget::widget_pointer()
 	{return	this;}
+
+
+	Widget
+	create_widget(Widget & Parent, Rectangle geom, Point place){
+		Widget	child;
+	}
 
 
 	bool
@@ -99,6 +109,23 @@ namespace	tsx{
 	uint
 	Widget::action_count()
 	const{return	xactions.size();}
+
+
+	void
+	Widget::show(){
+		if( winfo_t::created is false )
+			return;
+	else	if( winfo_t::mapped is true )
+			return;
+	else	if( winfo_t::window is 0 )
+			return;
+	else	if( xdisplay is null )
+			return;
+		else	XMapWindow(xdisplay->display_pointer(), winfo_t::window);
+	}
+
+
+
 
 
 	std::list<int>

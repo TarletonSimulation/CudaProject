@@ -8,42 +8,77 @@ namespace	tsx{
 	}
 
 	Application::Application(int argc, char ** argv)
-	:	Widget(), xDisplay(){
+	:	Widget(this), xDisplay(){
 		xDisplay::connect();	// just for the moment //
+
+		XSetWindowAttributes	swin_attr;
+		ulong	vmask = CWBackPixel | CWBorderPixel | CWEventMask;
+
+		swin_attr.background_pixel = 0x0;
+		swin_attr.border_pixel = 0x0;
+		swin_attr.event_mask = XEVT_DEFAULT_APP_MASK;
 
 		if( xDisplay::connected() is false ){
 			std::cerr << "Failed to connect to XServer" << std::endl;
 			std::cerr << "\tExiting program..." << std::endl;
 			exit(1);
-		}else	std::cout << "Connected to XServer" << std::endl;
+		}
 
 		xrun = false;
 
 		Widget::create_action("startup", tsx_startup, null, null);
 
+		Widget::wparent	= new Widget;
 
+		Widget::wparent->winfo_t::window = xDisplay::root();
+
+		set(Widget::winfo_t::geometry, 800, 500);
+
+		Widget::winfo_t::window	= XCreateWindow(
+			xDisplay::display_pointer(), Widget::wparent->winfo_t::window,
+			(int)Widget::winfo_t::at.x(), (int)Widget::winfo_t::at.y(),
+			(uint)Widget::winfo_t::geometry.width(), (uint)Widget::winfo_t::geometry.height(),
+			1, DefaultDepth( xDisplay::xserv, xDisplay::xnumb ), InputOutput,
+			DefaultVisual( xDisplay::xserv, xDisplay::xnumb ), vmask, &swin_attr
+		);
+
+		if( Widget::winfo_t::window is 0 )
+			Widget::winfo_t::created = false;
+		else	Widget::winfo_t::created = true;
 	}
 
-	Application::~Application(){}
+	Application::~Application(){
+		delete	Widget::wparent;
+		if( xDisplay::connected() is false ){
+			std::cerr << "Failed to disconnect from XServer" << std::endl;
+			exit(2);
+		}
+	}
 
 
 
 	bool
 	Application::start(){
 		std::list<int> init_rv;
+		if( xDisplay::connected() is false )
+			return	false;
+
 		if( action_count() gt 0 ){
-			std::cout << "Attempting to initialize application" << std::endl;
 			for(
-				Widget::ActionList::iterator item = Widget::xactions.begin();
-				item != Widget::xactions.end(); ++item
+				Widget::ActionList::iterator act = Widget::xactions.begin();
+				act != Widget::xactions.end(); ++act
 			){
-				if( (*item)->name() is "startup" ){
-					init_rv = (*(*item))();
+				if( (*act)->name() is "startup" ){
+					init_rv = (*(*act))();
 				}
 			}
 		}
 
 		xrun = true;
+
+		Widget::show();
+		XFlush(xDisplay::display_pointer());
+		sleep(5);
 	}
 
 	uint

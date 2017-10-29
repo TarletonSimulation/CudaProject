@@ -71,6 +71,7 @@ namespace	tsx{
 	bool			mapped;
 	bool			update;
 	bool			active;
+	bool			blocking;
 	};
 
 
