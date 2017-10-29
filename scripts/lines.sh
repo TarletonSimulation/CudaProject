@@ -5,8 +5,8 @@
 cd $CudaProject
 
 line_count=0
-headers=$(find $CudaProject -type f | grep -i .h$)
-sources=$(find $CudaProject -type f | grep -i .cu$)
+headers=$(find $CudaProject/include -type f | grep -i .h$)
+sources=$(find $CudaProject/src -type f | grep -i .cu$)
 
 for x in $headers $sources
 do

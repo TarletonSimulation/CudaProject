@@ -2,16 +2,6 @@
 
 namespace	tsx{
 
-	static	int
-	tsx_startup(void *a, void *b, void *c){
-		return	0;
-	}
-
-	static	int
-	tsx_cleanup(void *a, void *b, void *c){
-		return	0;
-	}
-
 	Application::Application(int argc, char ** argv)
 	:	Widget(this), xDisplay(){
 		xDisplay::connect();	// just for the moment //
@@ -110,6 +100,7 @@ namespace	tsx{
 		}
 
 		XDestroyWindow(xDisplay::display_pointer(), Widget::winfo_t::window);
+	return	true;
 	}
 
 	bool
