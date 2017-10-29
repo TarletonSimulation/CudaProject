@@ -41,9 +41,13 @@ namespace	tsx{
 			int	screen_count()		const;
 
 	const	Rectangle &	geometry();
+		int		width()			const;
+		int		height()		const;
 		Window		root()			const;
 		Display	*	display_pointer()	const;
 		Screen	*	screen_pointer()	const;
+		Visual	*	visual()		const;
+		int		depth()			const;
 
 	protected:
 		Rectangle	xgeom;	// display size

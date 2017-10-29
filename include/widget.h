@@ -35,15 +35,15 @@ namespace	tsx{
 		public:
 					 Widget(xDisplay * =null);
 					 Widget(const Rectangle &,const Point &, xDisplay * =null);
-					~Widget();
+			virtual		~Widget();
 	
 	typedef	std::list<Widget *>	WidgetList;
 	typedef	std::list<Action *>	ActionList;
 	typedef	std::list<int>		ActionReturn;
-
-		friend	Widget	&	create_widget(Widget &, const Rectangle &, const Point &);
-		static	Widget	&	create_widget(Widget &, const Rectangle &, const Point &);
-			Widget	&	create_widget(const Rectangle &, const Point &);
+			
+		friend	Widget	*	create_widget(Widget *, const Rectangle &, const Point &);
+		static	Widget	*	create_widget(Widget *, const Rectangle &, const Point &);
+			Widget	*	create_widget(const Rectangle &, const Point &);
 
 		friend	Widget	*	destroy_widget(Widget &, const Widget &);
 		static	Widget	*	destroy_widget(Widget &, const Widget &);
@@ -57,6 +57,12 @@ namespace	tsx{
 
 		static	void		show_all(Widget &);
 			void		show_all();
+
+		static	bool		showing(const Widget &);
+			bool		showing()	const;
+
+		static	bool		created(const Widget &);
+			bool		created()	const;
 
 		static	void		hide(Widget &);
 			void		hide();
@@ -142,6 +148,11 @@ virtual	std::list<int>	operator	()(const std::string &);
 			void		remove_display();
 			ActionList	xactions;
 
+			WidgetList	child_list;
+
+			XSizeHints *	size_hints;
+			XWMHints *	wm_hints;
+			XClassHint *	class_hint;
 		private:
 	};
 

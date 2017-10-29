@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. scripts/tsx.env
+. scripts/funcs.sh
 
 tput reset
 

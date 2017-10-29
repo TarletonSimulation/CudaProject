@@ -7,6 +7,11 @@ namespace	tsx{
 		return	0;
 	}
 
+	static	int
+	tsx_cleanup(void *a, void *b, void *c){
+		return	0;
+	}
+
 	Application::Application(int argc, char ** argv)
 	:	Widget(this), xDisplay(){
 		xDisplay::connect();	// just for the moment //
@@ -26,13 +31,16 @@ namespace	tsx{
 
 		xrun = false;
 
-		Widget::create_action("startup", tsx_startup, null, null);
+		Widget::create_action("startup", null, null, null);
+		Widget::create_action("cleanup", null, null, null);
 
 		Widget::wparent	= new Widget;
 
 		Widget::wparent->winfo_t::window = xDisplay::root();
 
 		set(Widget::winfo_t::geometry, 800, 500);
+
+		Widget::winfo_t::at.set( (xDisplay::width() - Widget::winfo_t::geometry.width())/2, (xDisplay::height() - Widget::winfo_t::geometry.height())/2 );
 
 		Widget::winfo_t::window	= XCreateWindow(
 			xDisplay::display_pointer(), Widget::wparent->winfo_t::window,
@@ -45,10 +53,20 @@ namespace	tsx{
 		if( Widget::winfo_t::window is 0 )
 			Widget::winfo_t::created = false;
 		else	Widget::winfo_t::created = true;
+
+		Widget::winfo_t::update = true;
 	}
 
 	Application::~Application(){
-		delete	Widget::wparent;
+		for(
+			Widget::ActionList::iterator action = xactions.begin();
+			action != xactions.end(); ++action
+		){
+			if( (*action)->name() is "cleanup" ){
+				(*(*action))();
+			}
+		}
+
 		if( xDisplay::connected() is false ){
 			std::cerr << "Failed to disconnect from XServer" << std::endl;
 			exit(2);
@@ -61,6 +79,8 @@ namespace	tsx{
 	Application::start(){
 		std::list<int> init_rv;
 		if( xDisplay::connected() is false )
+			return	false;
+	else	if( Widget::winfo_t::created is false )
 			return	false;
 
 		if( action_count() gt 0 ){
@@ -77,8 +97,27 @@ namespace	tsx{
 		xrun = true;
 
 		Widget::show();
-		XFlush(xDisplay::display_pointer());
-		sleep(5);
+		XEvent	evt;
+
+		while( running() ){
+			XNextEvent( xDisplay::display_pointer(), &evt );
+			switch( evt.type ){
+				case	ButtonPress:
+					if( evt.xany.window is Widget::winfo_t::window )
+						stop();
+					break;
+			}
+		}
+
+		XDestroyWindow(xDisplay::display_pointer(), Widget::winfo_t::window);
+	}
+
+	bool
+	Application::stop(){
+		if( xrun is false )
+			;
+		else	xrun = false;
+		return	(xrun is false);
 	}
 
 	uint
@@ -86,6 +125,10 @@ namespace	tsx{
 	const{
 		return	Widget::action_count();
 	}
+
+	bool
+	Application::running()
+	const{return (xrun is true);}
 
 	bool
 	Application::connect_action(const std::string & title, Handler::Caller caller, void * a, void * b){

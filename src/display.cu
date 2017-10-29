@@ -59,6 +59,22 @@ namespace	tsx{
 		}
 	}
 
+	int
+	xDisplay::width()
+	const{
+		if( connected() is false )
+			return	0;
+		else	return	(int)xgeom.width();
+	}
+
+	int
+	xDisplay::height()
+	const{
+		if( connected() is false )
+			return	0;
+		else	return	(int)xgeom.height();
+	}
+
 	std::string
 	xDisplay::screen_name()
 	const{
@@ -130,6 +146,22 @@ namespace	tsx{
 		if( connected() is true )
 			return	ScreenCount(xserv);
 		else	return	0;
+	}
+
+	int
+	xDisplay::depth()
+	const{
+		if( connected() is false )
+			return	-1;
+		else	return	DefaultDepth(xserv,xnumb);
+	}
+
+	Visual *
+	xDisplay::visual()
+	const{
+		if( connected() is false )
+			return	null;
+		else	return	DefaultVisual(xserv,xnumb);
 	}
 
 }
