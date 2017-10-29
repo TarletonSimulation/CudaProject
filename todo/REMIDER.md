@@ -1,4 +1,4 @@
-In source file:	geometry.cu
+In src/
 	
 	+ Rectangle Class
 	*	restrict width and height final values to gte 0
@@ -8,6 +8,17 @@ In source file:	geometry.cu
 	+ Point Class
 
 	+ global values in tsx::*
+
+	+ Handlers, Actions and Signals
+	*	+ update actions to incorperate handler names to be blocked or called specifically
+
+	+ DataBus
+	*	+ stream, pipe and socket classes needed
+	*	+ non-daemon dbus, run locally
+
+	+ Windowing/Widgets
+	*	+ basic widgets
+	*	+ surfaces, fonts
 
 In scripts/
 	
