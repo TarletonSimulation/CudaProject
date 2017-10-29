@@ -36,6 +36,7 @@ then
 		then
 			echo "Success"
 		else	echo "Failure"
+			exit 1
 		fi
 
 	done
@@ -77,6 +78,7 @@ then
 		then
 			echo "Success"
 		else	echo "Failure"
+			exit 1
 		fi
 
 	done

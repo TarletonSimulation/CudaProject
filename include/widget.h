@@ -142,7 +142,6 @@ virtual	std::list<int>	operator	()(const std::string &);
 			// parent data //
 			Widget	 *	wparent;
 			xDisplay *	xdisplay;
-			Signal	 *	psignal;	// signal from parent //
 
 			bool		connect_display(xDisplay *);
 			void		remove_display();

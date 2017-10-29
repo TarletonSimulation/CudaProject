@@ -85,18 +85,6 @@ const Action &	operator	 = (const Action &);
 
 
 
-	class	Signal{
-		public:
-				 Signal();
-				~Signal();
-
-		std::list<int>	dispatch(const std::string &, std::list<Action *> &);
-		
-		protected:
-		private:
-	};
-
-
 
 
 }

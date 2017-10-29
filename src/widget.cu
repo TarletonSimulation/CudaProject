@@ -89,6 +89,9 @@ namespace	tsx{
 					return	null;
 				else
 					child->winfo_t::created = true;
+
+				
+
 			return	child;
 			}
 		}

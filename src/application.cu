@@ -96,6 +96,13 @@ namespace	tsx{
 					if( evt.xany.window is Widget::winfo_t::window )
 						stop();
 					break;
+				case	KeyPress:
+					switch( XLookupKeysym( &(evt.xkey), 0 ) ){
+						case	XK_Escape:
+							stop();
+							break;
+					}
+					break;
 			}
 		}
 

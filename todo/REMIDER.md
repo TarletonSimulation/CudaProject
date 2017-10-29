@@ -9,5 +9,8 @@ In source file:	geometry.cu
 
 	+ global values in tsx::*
 
-
+In scripts/
+	
+	+ Compilation script
+	*	+ stat file for last modification time, to speed up compilation by not compiling sources that have already been built +
 

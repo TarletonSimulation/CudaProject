@@ -62,13 +62,13 @@ namespace	tsx{
 
 
 	struct	winfo_t{
-	cairo_t		*	cairo;
-	cairo_surface_t	*	cairo_surface;
+	cairo_t		*	cairo;		// dont know if i really need //
+	cairo_surface_t	*	cairo_surface;	// dont know //
 	Window			window;
 	Rectangle		geometry;
 	Point			at;
 	Colormap		colormap;
-	XVisualInfo	*	vis_info;
+	XVisualInfo	*	vis_info;	// dont know about right here //
 	GLint		*	gl_iarr;
 	GLfloat		*	gl_farr;
 	bool			created;
