@@ -10,9 +10,8 @@ namespace	tsx{
 	}
 
 	xDisplay::~xDisplay(){
-		disconnect();
+		// disconnect here if showing problems from XServer //
 	}
-
 
 	void
 	xDisplay::connect(){

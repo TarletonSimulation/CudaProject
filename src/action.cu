@@ -52,6 +52,8 @@ namespace	tsx{
 		p1 = a;
 		p2 = b;
 		p3 = c;
+		if(call is null)
+			return	-1;
 	return	call(p1,p2,p3);
 	}
 
@@ -186,7 +188,7 @@ namespace	tsx{
 	}
 
 	std::list<int>
-	Action::operator ()(void *& a, void *& b, void *& c){
+	Action::operator ()(void * a, void * b, void * c){
 		std::list<int> rv;
 
 		if( count() lt 1 )

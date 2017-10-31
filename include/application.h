@@ -27,6 +27,8 @@ const	Widget::ActionList &	actions()	const;
 	const	Widget	&	widget()	const;
 		Widget	&	widget_ref();
 		Widget	*	widget_pointer();
+			
+		Display	*	XDisplayPtr()	const;
 
 		std::list<int>	operator	()(const std::string &);
 

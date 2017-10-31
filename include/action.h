@@ -46,10 +46,10 @@ typedef	std::list<uint>		OrderList;
 	
 	static	OrderList	Unordered();	// just returns an list with max unsigned int // (unsigned int)(-1) //
 
-	static	Action		create_action(const std::string &, Handler::Caller, void *, void *, void *);
+	static	Action		create_action(const std::string &, Handler::Caller, void *, void *, void * =null);
 	static	Action		create_action(const std::string &, HandlerList, OrderList);
 
-	static	Action	*	create_action_pointer(const std::string &, Handler::Caller, void *, void *, void *);
+	static	Action	*	create_action_pointer(const std::string &, Handler::Caller, void *, void *, void * =null);
 	static	Action	*	create_action_pointer(const std::string &, HandlerList, OrderList);
 
 		bool		connect(Handler::Caller, void *, void *, void *);
@@ -66,7 +66,7 @@ typedef	std::list<uint>		OrderList;
 		std::string	name()	const;
 
 std::list<int>	operator	() (void);
-std::list<int>	operator	() (void *&, void *&, void *&);
+std::list<int>	operator	() (void *, void * =null, void * =null);
 	bool	operator	== (const Action &);
 	bool	operator	!= (const Action &);
 const Action &	operator	 = (const Action &);

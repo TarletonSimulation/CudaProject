@@ -17,8 +17,11 @@ namespace	tsx{
 				~widget_base();
 
 			bool	showing()	const;
+			void	showing(bool);
 			bool	created()	const;
+			void	created(bool);
 			bool	active()	const;
+			void	active(bool);
 
 			ulong	win_id()	const;		// XServer window id //
 			ulong	pwin_id()	const;		// XServer parent window id //
@@ -45,6 +48,12 @@ namespace	tsx{
 		static	Widget	&	create(Widget &, const Rectangle &, const Point &);
 			Widget	&	create(const Rectangle &, const Point &);
 
+			bool		created()	const;
+			void		created(bool);
+
+			bool		showing()	const;
+			void		showing(bool);
+
 		friend	Widget	&	destroy_widget(Widget &, Widget &);
 		static	Widget	&	destroy(Widget &, Widget &);
 			Widget	&	destroy(Widget &);
@@ -56,6 +65,11 @@ namespace	tsx{
 
 	static	const	Rectangle &	size(const Widget &);
 		const	Rectangle &	size()	const;
+	
+	static		Rectangle &	size_ref(Widget &);
+			Rectangle &	size_ref();
+	static		Rectangle *	size_pointer(Widget &);
+			Rectangle *	size_pointer();
 
 		// only accepts x and y values //
 		static	void		position(Widget &, float, float);
@@ -65,6 +79,11 @@ namespace	tsx{
 	
 	static	const	Point	&	position(const Widget &);
 		const	Point	&	position()	const;
+	
+	static		Point	&	position_ref(Widget &);
+			Point	&	position_ref();
+	static		Point	*	position_pointer(Widget &);
+			Point	*	position_pointer();
 
 		static	void		show(Widget &);
 			void		show();
@@ -73,10 +92,8 @@ namespace	tsx{
 			void		show_all();
 
 		static	bool		showing(const Widget &);
-			bool		showing()	const;
 
 		static	bool		created(const Widget &);
-			bool		created()	const;
 
 		static	void		hide(Widget &);
 			void		hide();
@@ -86,6 +103,9 @@ namespace	tsx{
 
 		static	bool		has_children(const Widget &);
 			bool		has_children()		const;
+
+		static	Drawable	XWindow(const Widget &);	// Drawable is the same as Window //
+			Drawable	XWindow()		const;
 		
 		// general action callers //
 		static	ActionReturn	on_button_press(Widget &);
@@ -135,6 +155,8 @@ namespace	tsx{
 
 		static	bool		disconnect_action(Widget &, const std::string &, Handler::Caller);
 			bool		disconnect_action(const std::string &, Handler::Caller);
+
+			void		call_actions(const std::string &);
 		
 		// base class values //
 		const	ActionList &	actions()		const;

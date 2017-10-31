@@ -6,6 +6,9 @@ namespace	tsx{
 	:	Widget(this), xDisplay(){
 		xDisplay::connect();	// later change to allow multiple connection choices //
 
+		create_action("startup",null,null,null);
+		create_action("cleanup",null,null,null);
+
 		if( xDisplay::connected() is false ){
 			std::cerr << "Failed to connect to XServer" << std::endl;
 			exit(1);
@@ -26,10 +29,15 @@ namespace	tsx{
 			Widget::widget_base::geometry.height(100);
 		}
 
+		if( Widget::created() is true ){
+			XDestroyWindow(XDisplayPtr(), Widget::XWindow());
+			Widget::created(false);
+		}
+
 		GLint	glattr[]	= {GLX_DOUBLEBUFFER, GLX_RGBA, GLX_DEPTH_SIZE, 24, None};
 XSetWindowAttributes	swin_attr;
 		ulong	vmask		= CWColormap | CWEventMask;
-		long	emask		= KeyPressMask | ButtonPressMask | StructureNotifyMask | ExposureMask;
+		long	emask		= KeyPressMask | ButtonPressMask | StructureNotifyMask | ExposureMask | SubstructureNotifyMask;
 
 		Widget::widget_base::vis_info	= glXChooseVisual(xDisplay::display_pointer(), null, glattr);
 		if(Widget::widget_base::vis_info is null){
@@ -58,18 +66,13 @@ XSetWindowAttributes	swin_attr;
 
 		XStoreName(xDisplay::display_pointer(), Widget::widget_base::window, xargv[0].c_str());
 
+		Widget::widget_base::glx_context = glXCreateContext(xDisplay::display_pointer(), Widget::widget_base::vis_info, null, true);
+		glXMakeCurrent(xDisplay::display_pointer(), Widget::widget_base::window, Widget::widget_base::glx_context);
+		glEnable(GL_DEPTH_TEST);
 	}
 
 	Application::~Application(){
-		for(
-			Widget::ActionList::iterator action = xactions.begin();
-			action != xactions.end(); ++action
-		){
-			if( (*action)->name() is "cleanup" ){
-				(*(*action))();
-			}
-		}
-
+		call_actions("cleanup");
 		if( xDisplay::connected() is false ){
 			std::cerr << "Failed to disconnect from XServer" << std::endl;
 			exit(2);
@@ -87,20 +90,16 @@ XSetWindowAttributes	swin_attr;
 			return	false;
 
 		if( action_count() gt 0 ){
-			for(
-				Widget::ActionList::iterator act = Widget::xactions.begin();
-				act != Widget::xactions.end(); ++act
-			){
-				if( (*act)->name() is "startup" ){
-					init_rv = (*(*act))();
-				}
-			}
+			Widget::call_actions("startup");
 		}
 
 		xrun = true;
 
 		Widget::show();
 		XEvent	evt;
+		XWindowAttributes win_attr;
+
+		bool	no_act = false;
 
 		if( Widget::child_list.size() gt 0 ){
 			for(
@@ -116,8 +115,6 @@ XSetWindowAttributes	swin_attr;
 			XNextEvent( xDisplay::display_pointer(), &evt );
 			switch( evt.type ){
 				case	ButtonPress:
-					if( evt.xany.window is Widget::winfo_t::window )
-						stop();
 					break;
 				case	KeyPress:
 					switch( XLookupKeysym( &(evt.xkey), 0 ) ){
@@ -125,6 +122,21 @@ XSetWindowAttributes	swin_attr;
 							stop();
 							break;
 					}
+					break;
+				case	ConfigureNotify:
+					Widget::call_actions("configure");
+					break;
+				case	ResizeRequest:
+					Widget::call_actions("resize");
+					break;
+				case	Expose:
+					XGetWindowAttributes(XDisplayPtr(), Widget::XWindow(), &win_attr);
+					glViewport(0,0, win_attr.width, win_attr.height);
+
+					Widget::size(win_attr.width, win_attr.height);
+					
+					Widget::call_actions("expose");
+					glXSwapBuffers(XDisplayPtr(), Widget::XWindow());
 					break;
 			}
 		}
@@ -201,6 +213,14 @@ XSetWindowAttributes	swin_attr;
 	Widget *
 	Application::widget_pointer(){
 		return	Widget::widget_pointer();
+	}
+
+	Display *
+	Application::XDisplayPtr()
+	const{
+		if( xDisplay::connected() is false )
+			return	null;
+		else	return	xDisplay::xserv;
 	}
 
 	std::list<int>

@@ -23,6 +23,10 @@
 #include <iomanip>
 #include <string>
 #include <list>
+#include <cmath>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
 
 #if	!defined	CPU
 #	 define		CPU

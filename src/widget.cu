@@ -22,8 +22,29 @@ namespace	tsx{
 	widget_base::~widget_base(){
 	}
 
+	bool
+	widget_base::created()
+	const{return (winfo_t::created is true);}
 
+	void
+	widget_base::created(bool v)
+	{winfo_t::created = v;}
 
+	bool
+	widget_base::showing()
+	const{return (winfo_t::mapped is true);}
+
+	void
+	widget_base::showing(bool v)
+	{winfo_t::mapped = v;}
+
+	bool
+	widget_base::active()
+	const{return (winfo_t::active is true);}
+
+	void
+	widget_base::active(bool v)
+	{winfo_t::active = v;}
 
 
 
@@ -51,6 +72,32 @@ namespace	tsx{
 	Widget::widget_pointer()
 	{return	this;}
 
+	Drawable
+	Widget::XWindow()
+	const{
+		return	widget_base::window;
+	}
+
+	Drawable
+	Widget::XWindow(const Widget & widg){
+		return	widg.XWindow();
+	}
+
+	bool
+	Widget::created()
+	const{return widget_base::created();}
+
+	bool
+	Widget::showing()
+	const{return widget_base::showing();}
+
+	void
+	Widget::created(bool v)
+	{widget_base::created(v);}
+
+	void
+	Widget::showing(bool v)
+	{widget_base::showing(v);}
 
 	Widget &
 	Widget::create(Widget & Parent, const Rectangle & geom, const Point & place){
@@ -106,7 +153,21 @@ XSetWindowAttributes	swa;
 		}else	child->winfo_t::created = true;
 		
 		child->widget_base::glx_context	= glXCreateContext(child->xdisplay->display_pointer(), child->widget_base::vis_info, null, true);
-
+		glXMakeCurrent( child->xdisplay->display_pointer(), child->Widget::widget_base::window, child->widget_base::glx_context );
+		
+		child->xactions.push_back( Action::create_action_pointer("expose",null,null,null) );
+		child->xactions.push_back( Action::create_action_pointer("configure",null,null,null) );
+		child->xactions.push_back( Action::create_action_pointer("resize",null,null,null) );
+		child->xactions.push_back( Action::create_action_pointer("button-press",null,null,null) );
+		child->xactions.push_back( Action::create_action_pointer("button-release",null,null,null) );
+		child->xactions.push_back( Action::create_action_pointer("cursor-enter",null,null,null) );
+		child->xactions.push_back( Action::create_action_pointer("cursor-leave",null,null,null) );
+		child->xactions.push_back( Action::create_action_pointer("on-hide",null,null,null) );
+		child->xactions.push_back( Action::create_action_pointer("on-show",null,null,null) );
+		child->xactions.push_back( Action::create_action_pointer("on-activate",null,null,null) );
+		child->xactions.push_back( Action::create_action_pointer("on-deactivate",null,null,null) );
+		child->xactions.push_back( Action::create_action_pointer("on-destroy",null,null,null) );
+		
 		Parent.child_list.push_back(child);
 	return	*child;
 	}
@@ -122,7 +183,34 @@ XSetWindowAttributes	swa;
 	}
 
 
+	void
+	Widget::call_actions(const std::string & label){
+		if( xactions.size() is 0 )	return;
+		for(
+			ActionList::iterator action = actions_ref().begin();
+			action isnot actions_ref().end(); ++action
+		){
+			if( (*action)->name() is label ){
+				(*(*action))();
+				break;
+			}
+		}
 
+		for(
+			WidgetList::iterator child = child_list.begin();
+			child isnot child_list.end(); ++child
+		){
+			for(
+				ActionList::iterator action = (*child)->actions_ref().begin();
+				action isnot (*child)->actions_ref().end(); ++action
+			){
+				if( (*action)->name() is label ){
+					(*(*action))();
+					break;
+				}
+			}
+		}
+	}
 
 	bool
 	Widget::create_action(const std::string & title, Handler::Caller caller, void * a, void * b){
@@ -194,17 +282,20 @@ XSetWindowAttributes	swa;
 	}
 
 	bool
-	Widget::showing()
-	const{return winfo_t::mapped;}
-
-	bool
 	Widget::showing(const Widget & w)
 	{return	w.showing();}
 
 	void
-	Widget::size(float w, float h)
-	{Rectangle::set(widget_base::geometry,w,h);}
-
+	Widget::size(float w, float h){
+		if( (can_use_scalar(w) is false) or (can_use_scalar(h) is false) )
+			return;
+		else{
+			widget_base::geometry.width(w);
+			widget_base::geometry.height(h);
+		}
+	return;
+	}
+	
 	void
 	Widget::size(Widget & widg, float w, float h)
 	{widg.size(w,h);}
@@ -216,6 +307,22 @@ XSetWindowAttributes	swa;
 	const Rectangle &
 	Widget::size(const Widget & widg)
 	{return	widg.size();}
+
+	Rectangle &
+	Widget::size_ref()
+	{return	widget_base::geometry;}
+
+	Rectangle &
+	Widget::size_ref(Widget & widg)
+	{return	widg.size_ref();}
+
+	Rectangle *
+	Widget::size_pointer()
+	{return &(widget_base::geometry);}
+
+	Rectangle *
+	Widget::size_pointer(Widget & widg)
+	{return widg.size_pointer();}
 
 
 	void
@@ -233,6 +340,22 @@ XSetWindowAttributes	swa;
 	const Point &
 	Widget::position(const Widget & widg)
 	{return widg.position();}
+
+	Point &
+	Widget::position_ref()
+	{return	widget_base::at;}
+
+	Point &
+	Widget::position_ref(Widget & widg)
+	{return widg.position_ref();}
+
+	Point *
+	Widget::position_pointer()
+	{return &(widget_base::at);}
+
+	Point *
+	Widget::position_pointer(Widget & widg)
+	{return widg.position_pointer();}
 
 
 

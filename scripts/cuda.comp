@@ -27,8 +27,14 @@ then
 		if [ -d $x ]
 		then continue
 		fi
-		
+
 		name=`basename $x .cu`
+		
+		if [ -f sbin/${name}.o ]
+		then
+			rm -f sbin/${name}.o
+		fi
+
 		printf	"Compiling Source: %16s\t" "$x"
 		$Comp $StdWarn -dc src/$x -o $CudaProject/sbin/${name}.o -I $CudaProject $StdPkg
 		
@@ -57,9 +63,6 @@ then
 		LibTsx="$CudaProject/lib/$LibTsx"
 	else	LibTsx=""
 	fi
-
-	rm -f $CudaProject/sbin/*.o
-
 fi
 
 if test `find main -type f | grep .cu | wc -l` -gt 0
