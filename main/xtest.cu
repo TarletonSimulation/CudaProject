@@ -94,5 +94,6 @@ int main(int argc, char ** argv){
 	app.connect_action("cleanup", app_cleanup, null, null);
 
 	app.start();		// run application main loop //
+	app.xDisplay::disconnect();	// disconnect needs to be added to the object source later //
 return	0;
 }

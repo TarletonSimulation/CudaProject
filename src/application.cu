@@ -22,12 +22,12 @@ namespace	tsx{
 			xargv[i] = std::string(argv[i]);
 		}
 
-		if( Widget::widget_base::geometry.width() lte 0 ){
-			Widget::widget_base::geometry.width(100);
+		if( Widget::widget_base::geometry.width() lte 5 ){
+			Widget::widget_base::geometry.width(300);
 		}
 
-		if( Widget::widget_base::geometry.height() lte 0 ){
-			Widget::widget_base::geometry.height(100);
+		if( Widget::widget_base::geometry.height() lte 5 ){
+			Widget::widget_base::geometry.height(300);
 		}
 
 		GLint	glattr[]	= {GLX_DOUBLEBUFFER, GLX_RGBA, GLX_DEPTH_SIZE, 24, None};
