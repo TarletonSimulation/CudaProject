@@ -3,8 +3,6 @@
 namespace	tsx{
 
 	widget_base::widget_base(){
-		winfo_t::cairo		= null;
-		winfo_t::cairo_surface	= null;
 		winfo_t::vis_info	= null;
 		winfo_t::gl_iarr	= null;	// for opengl attributes //
 		winfo_t::gl_farr	= null;	// for rotation possibly // could be changed later //
@@ -72,6 +70,20 @@ namespace	tsx{
 
 		Widget::size(1,1);
 		Widget::position(0,0);
+		
+		xactions.push_back( Action::create_action_pointer("expose",null,null,null) );
+		xactions.push_back( Action::create_action_pointer("configure",null,null,null) );
+		xactions.push_back( Action::create_action_pointer("resize",null,null,null) );
+		xactions.push_back( Action::create_action_pointer("button-press",null,null,null) );
+		xactions.push_back( Action::create_action_pointer("button-release",null,null,null) );
+		xactions.push_back( Action::create_action_pointer("cursor-enter",null,null,null) );
+		xactions.push_back( Action::create_action_pointer("cursor-leave",null,null,null) );
+		xactions.push_back( Action::create_action_pointer("on-hide",null,null,null) );
+		xactions.push_back( Action::create_action_pointer("on-show",null,null,null) );
+		xactions.push_back( Action::create_action_pointer("on-activate",null,null,null) );
+		xactions.push_back( Action::create_action_pointer("on-deactivate",null,null,null) );
+		xactions.push_back( Action::create_action_pointer("on-destroy",null,null,null) );
+		
 	}
 
 	Widget::~Widget(){
@@ -161,7 +173,7 @@ XSetWindowAttributes	swa;
 								child->xdisplay->display_pointer(), Parent.widget_base::window,
 								child->widget_base::at.x(), child->widget_base::at.y(),
 								child->widget_base::geometry.width(), child->widget_base::geometry.height(),
-								2, child->widget_base::vis_info->depth, CopyFromParent,
+								1, child->widget_base::vis_info->depth, CopyFromParent,
 								child->widget_base::vis_info->visual, vmask, &swa
 							);
 		
@@ -173,19 +185,6 @@ XSetWindowAttributes	swa;
 		
 		child->widget_base::glx_context	= glXCreateContext(child->xdisplay->display_pointer(), child->widget_base::vis_info, null, true);
 		glXMakeCurrent( child->xdisplay->display_pointer(), child->Widget::widget_base::window, child->widget_base::glx_context );
-		
-		child->xactions.push_back( Action::create_action_pointer("expose",null,null,null) );
-		child->xactions.push_back( Action::create_action_pointer("configure",null,null,null) );
-		child->xactions.push_back( Action::create_action_pointer("resize",null,null,null) );
-		child->xactions.push_back( Action::create_action_pointer("button-press",null,null,null) );
-		child->xactions.push_back( Action::create_action_pointer("button-release",null,null,null) );
-		child->xactions.push_back( Action::create_action_pointer("cursor-enter",null,null,null) );
-		child->xactions.push_back( Action::create_action_pointer("cursor-leave",null,null,null) );
-		child->xactions.push_back( Action::create_action_pointer("on-hide",null,null,null) );
-		child->xactions.push_back( Action::create_action_pointer("on-show",null,null,null) );
-		child->xactions.push_back( Action::create_action_pointer("on-activate",null,null,null) );
-		child->xactions.push_back( Action::create_action_pointer("on-deactivate",null,null,null) );
-		child->xactions.push_back( Action::create_action_pointer("on-destroy",null,null,null) );
 		
 		Parent.child_list.push_back(child);
 	return	*child;
@@ -209,13 +208,15 @@ XSetWindowAttributes	swa;
 			return;
 		}
 		if( win is 0 ){
+			std::cout << "WidgetID is 0" << std::endl;
+			std::cout << "calling all widgets" << std::endl;
 			for(
 				ActionList::iterator action = actions_ref().begin();
 				action isnot actions_ref().end(); ++action
 			){
 				if( (*action)->name() is label ){
 					(*(*action))();
-//					break;
+					break;
 				}
 			}
 	
@@ -229,20 +230,25 @@ XSetWindowAttributes	swa;
 				){
 					if( (*action)->name() is label ){
 						(*(*action))();
-//						break;
+						break;
 					}
 				}
 			}
 	}else	if( win gt 0 ){
+			std::cout << "searching for widget_id: " << win << std::endl;
 			if( win is XWindow() ){
+				std::cout << "attempting to execute action " << label << std::endl;
 				for(
 					ActionList::iterator action = actions_ref().begin();
 					action isnot actions_ref().end(); ++action
 				){
 					if( (*action)->name() is label ){
+						std::cout << "\texecuting action " << (*action)->name() << std::endl;
 						(*(*action))();
-					}
+						break;
+					}else	std::cout << "\t" << (*action)->name() << std::endl;
 				}
+				return;
 			}
 
 			for(
@@ -256,6 +262,7 @@ XSetWindowAttributes	swa;
 					){
 						if( (*action)->name() is label ){
 							(*(*action))();
+							break;
 						}
 					}
 				}

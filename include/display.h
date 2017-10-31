@@ -12,10 +12,6 @@ extern "C"{
 #include <X11/keysym.h>
 #include <X11/keysymdef.h>
 
-#include <cairo/cairo.h>
-#include <cairo/cairo-xlib.h>
-#include <cairo/cairo-xlib-xrender.h>
-
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glx.h>
@@ -62,8 +58,6 @@ namespace	tsx{
 
 
 	struct	winfo_t{
-	cairo_t		*	cairo;		// dont know if i really need //
-	cairo_surface_t	*	cairo_surface;	// dont know //
 	Window			window;
 	Rectangle		geometry;
 	Point			at;

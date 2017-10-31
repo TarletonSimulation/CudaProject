@@ -57,7 +57,7 @@ int app_resize(void * app, void * n1, void * ret_v){
 	// test xlib function //
 	// * later reconfigure all window structure items //
 	// * set resize and repos to false //
-	XResizeWindow(prog->XDisplayPtr(), prog->Widget::XWindow(), rect.width(), rect.height());
+//	XResizeWindow(prog->XDisplayPtr(), prog->Widget::XWindow(), rect.width(), rect.height());
 return	0;
 }
 

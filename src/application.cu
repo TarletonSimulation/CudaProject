@@ -6,8 +6,8 @@ namespace	tsx{
 	:	Widget(this), xDisplay(){
 		xDisplay::connect();	// later change to allow multiple connection choices //
 
-		create_action("startup",null,null,null);
-		create_action("cleanup",null,null,null);
+		Widget::create_action("startup",null,null,null);
+		Widget::create_action("cleanup",null,null,null);
 
 		if( xDisplay::connected() is false ){
 			std::cerr << "Failed to connect to XServer" << std::endl;
@@ -73,9 +73,13 @@ XSetWindowAttributes	swin_attr;
 
 	Application::~Application(){
 		call_actions("cleanup");
-		if( xDisplay::connected() is false ){
-			std::cerr << "Failed to disconnect from XServer" << std::endl;
-			exit(2);
+		if( xDisplay::connected() is true ){
+			xDisplay::disconnect();
+			
+			if( xDisplay::connected() is true ){
+				std::cerr << "Failed to disconnect from XServer" << std::endl;
+				exit(2);
+			}
 		}
 	}
 
@@ -90,7 +94,7 @@ XSetWindowAttributes	swin_attr;
 			return	false;
 
 		if( action_count() gt 0 ){
-			Widget::call_actions("startup");
+			Widget::call_actions("startup", XWindow());
 		}
 
 		xrun = true;
@@ -126,8 +130,9 @@ XSetWindowAttributes	swin_attr;
 				case	ConfigureNotify:
 					// needs to be changed to be more specific with handleing children widgets //
 					// + ^WITH ALL EVENTS + //
+					// + Missing connected actions to sub_class:Widget + from Widget initialization //
 					if( Widget::widget_base::resize_needed() is true ){
-						Widget::call_actions("configure");
+						Widget::call_actions("configure", evt.xany.window);
 					}
 					break;
 				case	Expose:
@@ -136,7 +141,7 @@ XSetWindowAttributes	swin_attr;
 
 					Widget::size(win_attr.width, win_attr.height);
 					
-					Widget::call_actions("expose");
+					Widget::call_actions("expose", evt.xany.window);
 					glXSwapBuffers(XDisplayPtr(), Widget::XWindow());
 					break;
 			}
