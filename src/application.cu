@@ -119,11 +119,13 @@ XSetWindowAttributes	swin_attr;
 				case	KeyPress:
 					switch( XLookupKeysym( &(evt.xkey), 0 ) ){
 						case	XK_Escape:
-							stop();
+							stop();	// end app main loop //
 							break;
 					}
 					break;
 				case	ConfigureNotify:
+					// needs to be changed to be more specific with handleing children widgets //
+					// + ^WITH ALL EVENTS + //
 					if( Widget::widget_base::resize_needed() is true ){
 						Widget::call_actions("configure");
 					}

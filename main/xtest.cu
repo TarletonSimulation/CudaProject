@@ -2,15 +2,6 @@
 #include <tsx/widget.h>
 #include <tsx/file.h>
 
-
-int
-some_expose_event(void * widget, void * n1, void * n2){
-	std::cout << "\tsome expose event from child" << std::endl;
-return	0;
-}
-
-
-
 // pre-expose checking function //
 int app_prexpose(void * app, void * disp, void * ret_v){
 	int & x = *static_cast<int *>(ret_v);
@@ -65,7 +56,10 @@ int app_resize(void * app, void * n1, void * ret_v){
 	if( *x lt 0 )	return *x;
 	std::cout << "widget resize" << std::endl;
 	tsx::Rectangle rect = prog->Widget::size();
-
+	
+	// test xlib function //
+	// * later reconfigure all window structure items //
+	// * set resize and repos to false //
 	XResizeWindow(prog->XDisplayPtr(), prog->Widget::XWindow(), rect.width(), rect.height());
 return	0;
 }
@@ -102,8 +96,6 @@ int main(int argc, char ** argv){
 	app.connect_action("configure", app_resize, null, &ret_v);
 	app.connect_action("cleanup", app_cleanup, null, null);
 
-
-	app.start();
-
+	app.start();		// run application main loop //
 return	0;
 }

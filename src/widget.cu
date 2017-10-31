@@ -466,7 +466,7 @@ XSetWindowAttributes	swa;
 				if( (*act)->name() is action ){
 					return	(*(*act))();
 				}
-			}
+			}	// possibly activate child events as well if needed //
 		}
 	return	rv;
 	}
