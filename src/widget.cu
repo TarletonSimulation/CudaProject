@@ -46,6 +46,22 @@ namespace	tsx{
 	widget_base::active(bool v)
 	{winfo_t::active = v;}
 
+	bool
+	widget_base::resize_needed()
+	const{return (winfo_t::resize_needed is true);}
+
+	void
+	widget_base::resize_needed(bool v)
+	{winfo_t::resize_needed = v;}
+
+	bool
+	widget_base::repos_needed()
+	const{return (winfo_t::repos_needed is true);}
+
+	void
+	widget_base::repos_needed(bool v)
+	{winfo_t::repos_needed = v;}
+
 
 
 
@@ -53,6 +69,9 @@ namespace	tsx{
 	:	widget_base(){
 		wparent	= null;
 		xdisplay= server;
+
+		Widget::size(1,1);
+		Widget::position(0,0);
 	}
 
 	Widget::~Widget(){
@@ -184,29 +203,61 @@ XSetWindowAttributes	swa;
 
 
 	void
-	Widget::call_actions(const std::string & label){
-		if( xactions.size() is 0 )	return;
-		for(
-			ActionList::iterator action = actions_ref().begin();
-			action isnot actions_ref().end(); ++action
-		){
-			if( (*action)->name() is label ){
-				(*(*action))();
-				break;
-			}
+	Widget::call_actions(const std::string & label, int win){
+		if( xactions.size() is 0 ){
+			std::cout << "no actions to return for widget_id: " << XWindow() << std::endl;
+			return;
 		}
-
-		for(
-			WidgetList::iterator child = child_list.begin();
-			child isnot child_list.end(); ++child
-		){
+		if( win is 0 ){
 			for(
-				ActionList::iterator action = (*child)->actions_ref().begin();
-				action isnot (*child)->actions_ref().end(); ++action
+				ActionList::iterator action = actions_ref().begin();
+				action isnot actions_ref().end(); ++action
 			){
 				if( (*action)->name() is label ){
 					(*(*action))();
-					break;
+//					break;
+				}
+			}
+	
+			for(
+				WidgetList::iterator child = child_list.begin();
+				child isnot child_list.end(); ++child
+			){
+				for(
+					ActionList::iterator action = (*child)->actions_ref().begin();
+					action isnot (*child)->actions_ref().end(); ++action
+				){
+					if( (*action)->name() is label ){
+						(*(*action))();
+//						break;
+					}
+				}
+			}
+	}else	if( win gt 0 ){
+			if( win is XWindow() ){
+				for(
+					ActionList::iterator action = actions_ref().begin();
+					action isnot actions_ref().end(); ++action
+				){
+					if( (*action)->name() is label ){
+						(*(*action))();
+					}
+				}
+			}
+
+			for(
+				WidgetList::iterator child = child_list.begin();
+				child isnot child_list.end(); ++child
+			){
+				if( (*child)->XWindow() is win ){
+					for(
+						ActionList::iterator action = (*child)->actions_ref().begin();
+						action isnot (*child)->actions_ref().end(); ++action
+					){
+						if( (*action)->name() is label ){
+							(*(*action))();
+						}
+					}
 				}
 			}
 		}
@@ -287,11 +338,24 @@ XSetWindowAttributes	swa;
 
 	void
 	Widget::size(float w, float h){
+		// create limits on widget size and position later //
 		if( (can_use_scalar(w) is false) or (can_use_scalar(h) is false) )
 			return;
 		else{
-			widget_base::geometry.width(w);
-			widget_base::geometry.height(h);
+			bool	wset=false, hset=false;
+			if( w isnot widget_base::geometry.width() ){
+				widget_base::geometry.width(w);
+				wset = true;
+			}
+
+			if( h isnot widget_base::geometry.height() ){
+				widget_base::geometry.height(h);
+				hset = true;
+			}
+
+			if( (wset is true) or (hset is true) ){
+				widget_base::resize_needed(true);
+			}
 		}
 	return;
 	}
@@ -299,6 +363,14 @@ XSetWindowAttributes	swa;
 	void
 	Widget::size(Widget & widg, float w, float h)
 	{widg.size(w,h);}
+
+	void
+	Widget::size(Widget & widg, const Rectangle & rect)
+	{widg.size(rect);}
+
+	void
+	Widget::size(const Rectangle & rect)
+	{size(rect.width(), rect.height());}
 
 	const Rectangle &
 	Widget::size()
@@ -326,12 +398,36 @@ XSetWindowAttributes	swa;
 
 
 	void
-	Widget::position(float x, float y)
-	{tsx::Point::set(widget_base::at,x,y,0.0f);}
+	Widget::position(float x, float y){
+		bool xset=false, yset=false;
+
+		// create limits later for widget resize and reposition //
+
+		if( x isnot widget_base::at.x() ){
+			widget_base::at.x(x);
+			xset = true;
+		}
+
+		if( y isnot widget_base::at.y() ){
+			widget_base::at.y(y);
+			yset = true;
+		}
+
+		if( (yset is true) or (xset is true) )
+			widget_base::repos_needed(true);
+	}
 
 	void
 	Widget::position(Widget & widg, float x, float y)
 	{widg.position(x,y);}
+
+	void
+	Widget::position(const Point & at)
+	{position(at.x(),at.y());}
+
+	void
+	Widget::position(Widget & widg, const Point & at)
+	{widg.position(at);}
 
 	const Point &
 	Widget::position()

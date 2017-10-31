@@ -22,6 +22,10 @@ namespace	tsx{
 			void	created(bool);
 			bool	active()	const;
 			void	active(bool);
+			bool	resize_needed()	const;
+			void	resize_needed(bool);
+			bool	repos_needed()	const;
+			void	repos_needed(bool);
 
 			ulong	win_id()	const;		// XServer window id //
 			ulong	pwin_id()	const;		// XServer parent window id //
@@ -156,7 +160,7 @@ namespace	tsx{
 		static	bool		disconnect_action(Widget &, const std::string &, Handler::Caller);
 			bool		disconnect_action(const std::string &, Handler::Caller);
 
-			void		call_actions(const std::string &);
+			void		call_actions(const std::string &, int =0);
 		
 		// base class values //
 		const	ActionList &	actions()		const;

@@ -78,6 +78,8 @@ namespace	tsx{
 	bool			update;
 	bool			active;
 	bool			blocking;
+	bool			resize_needed;
+	bool			repos_needed;
 	};
 
 

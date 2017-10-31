@@ -11,11 +11,13 @@ return	0;
 
 
 
-
+// pre-expose checking function //
 int app_prexpose(void * app, void * disp, void * ret_v){
 	int & x = *static_cast<int *>(ret_v);
 	tsx::Application * prog = static_cast<tsx::Application *>(app);
 	Display *	display = static_cast<Display *>(disp);
+
+	std::cout << "application pre-expose" << std::endl;
 
 	if( display is null ){
 		x = -1;
@@ -27,8 +29,8 @@ int app_prexpose(void * app, void * disp, void * ret_v){
 return	x;
 }
 
-int
-app_expose(void * app, void * disp, void * ret_v){
+// attempt at an expose event //
+int app_expose(void * app, void * disp, void * ret_v){
 	
 	tsx::Application * prog	= static_cast<tsx::Application *>(app);
 	Display	*	display = static_cast<Display *>(disp);
@@ -54,6 +56,8 @@ app_expose(void * app, void * disp, void * ret_v){
 return	x;
 }
 
+
+// attempt at a reconfigure event //
 int app_resize(void * app, void * n1, void * ret_v){
 	tsx::Application * prog	= static_cast<tsx::Application *>(app);
 	int * x = static_cast<int *>(ret_v);
@@ -66,13 +70,15 @@ int app_resize(void * app, void * n1, void * ret_v){
 return	0;
 }
 
+// application finalization function //
 int app_cleanup(void * app, void * n1, void * n2){
-	std::cout << "application cleanup stage" << std::endl;
+	std::cout << "finalizing database" << std::endl;
 return	0;
 }
 
+// application initialization function //
 int app_startup(void * app, void * n1, void * n2){
-	std::cout << "some startup process" << std::endl;
+	std::cout << "initializing database" << std::endl;
 }
 
 
@@ -83,8 +89,11 @@ int main(int argc, char ** argv){
 	tsx::Rectangle	geom;
 	tsx::Point	at;
 
-	tsx::set(geom, 50,50);
+	tsx::set(geom, 500,500);
 	tsx::set(at, 0,0);
+
+	app.Widget::size(geom);
+	app.Widget::position(at);
 
 	int ret_v = 0;
 	app.connect_action("startup", app_startup, null, null);

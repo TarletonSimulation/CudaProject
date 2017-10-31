@@ -16,6 +16,7 @@ namespace	tsx{
 
 		xargc = argc;
 		xargv = new std::string [xargc];
+		Widget::wparent = null;
 
 		for(int i=0;i<xargc;i++){
 			xargv[i] = std::string(argv[i]);
@@ -29,16 +30,10 @@ namespace	tsx{
 			Widget::widget_base::geometry.height(100);
 		}
 
-		if( Widget::created() is true ){
-			glXDestroyContext(XDisplayPtr(), Widget::widget_base::glx_context);
-			XDestroyWindow(XDisplayPtr(), Widget::XWindow());
-			Widget::created(false);
-		}
-
 		GLint	glattr[]	= {GLX_DOUBLEBUFFER, GLX_RGBA, GLX_DEPTH_SIZE, 24, None};
 XSetWindowAttributes	swin_attr;
 		ulong	vmask		= CWColormap | CWEventMask;
-		long	emask		= KeyPressMask | ButtonPressMask | StructureNotifyMask | ExposureMask | SubstructureNotifyMask;
+		long	emask		= KeyPressMask | ButtonPressMask | StructureNotifyMask | ExposureMask;
 
 		Widget::widget_base::vis_info	= glXChooseVisual(xDisplay::display_pointer(), null, glattr);
 		if(Widget::widget_base::vis_info is null){
@@ -63,7 +58,11 @@ XSetWindowAttributes	swin_attr;
 			std::cerr << "Failed to create tsx::Application window" << std::endl;
 			std::cerr << "Exiting program" << std::endl;
 			exit(1);
-		}else	Widget::winfo_t::created = true;
+		}else{
+			Widget::created(true);
+			Widget::showing(false);
+			Widget::active(false);
+		}
 
 		XStoreName(xDisplay::display_pointer(), Widget::widget_base::window, xargv[0].c_str());
 
@@ -125,10 +124,9 @@ XSetWindowAttributes	swin_attr;
 					}
 					break;
 				case	ConfigureNotify:
-					Widget::call_actions("configure");
-					break;
-				case	ResizeRequest:
-					Widget::call_actions("resize");
+					if( Widget::widget_base::resize_needed() is true ){
+						Widget::call_actions("configure");
+					}
 					break;
 				case	Expose:
 					XGetWindowAttributes(XDisplayPtr(), Widget::XWindow(), &win_attr);
