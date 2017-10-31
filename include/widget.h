@@ -41,16 +41,30 @@ namespace	tsx{
 	typedef	std::list<Action *>	ActionList;
 	typedef	std::list<int>		ActionReturn;
 			
-		friend	Widget	*	create_widget(Widget *, const Rectangle &, const Point &);
-		static	Widget	*	create_widget(Widget *, const Rectangle &, const Point &);
-			Widget	*	create_widget(const Rectangle &, const Point &);
+		friend	Widget	&	create_widget(Widget &, const Rectangle &, const Point &);
+		static	Widget	&	create(Widget &, const Rectangle &, const Point &);
+			Widget	&	create(const Rectangle &, const Point &);
 
-		friend	Widget	*	destroy_widget(Widget &, const Widget &);
-		static	Widget	*	destroy_widget(Widget &, const Widget &);
-			Widget	*	destroy_widget(const Widget &);
+		friend	Widget	&	destroy_widget(Widget &, Widget &);
+		static	Widget	&	destroy(Widget &, Widget &);
+			Widget	&	destroy(Widget &);
 
-		friend	void		free_widget(Widget *&);
-		static	void		free_widget(Widget *&);
+		static	void		size(Widget &, float, float);
+		static	void		size(Widget &, const Rectangle &);
+			void		size(float, float);
+			void		size(const Rectangle &);
+
+	static	const	Rectangle &	size(const Widget &);
+		const	Rectangle &	size()	const;
+
+		// only accepts x and y values //
+		static	void		position(Widget &, float, float);
+		static	void		position(Widget &, const Point &);
+			void		position(float, float);
+			void		position(const Point &);
+	
+	static	const	Point	&	position(const Widget &);
+		const	Point	&	position()	const;
 
 		static	void		show(Widget &);
 			void		show();
@@ -73,7 +87,7 @@ namespace	tsx{
 		static	bool		has_children(const Widget &);
 			bool		has_children()		const;
 		
-		// general event callers //
+		// general action callers //
 		static	ActionReturn	on_button_press(Widget &);
 			ActionReturn 	on_button_press();
 
@@ -154,6 +168,11 @@ virtual	std::list<int>	operator	()(const std::string &);
 			XClassHint *	class_hint;
 		private:
 	};
+
+
+
+	Widget	&	create_widget(Widget &, const Rectangle &, const Point &);
+	Widget	&	destroy_widget(Widget &, const Widget &);
 
 
 }

@@ -18,6 +18,7 @@ src/
 	*	+ create localized environment to be able to change ported-program behavior
 	*	+ i.e: port opengl/cuda program into GLAppViewer (*doesnt exist yet*)
 	*	+	-> port other programs into localized environment
+	*	+ create 'XServer buffer' class to make an attempt to cut back on direct server calls
 
 	+ Windowing/Widgets
 	*	+ basic widgets

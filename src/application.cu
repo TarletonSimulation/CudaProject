@@ -4,47 +4,60 @@ namespace	tsx{
 
 	Application::Application(int argc, char ** argv)
 	:	Widget(this), xDisplay(){
-		xDisplay::connect();	// just for the moment //
-
-		XSetWindowAttributes	swin_attr;
-		ulong	vmask = CWBackPixel | CWBorderPixel | CWEventMask;
-
-		swin_attr.background_pixel = 0x0;
-		swin_attr.border_pixel = 0x0;
-		swin_attr.event_mask = XEVT_DEFAULT_APP_MASK;
+		xDisplay::connect();	// later change to allow multiple connection choices //
 
 		if( xDisplay::connected() is false ){
 			std::cerr << "Failed to connect to XServer" << std::endl;
-			std::cerr << "\tExiting program..." << std::endl;
 			exit(1);
 		}
 
-		xrun = false;
+		xargc = argc;
+		xargv = new std::string [xargc];
 
-		Widget::create_action("startup", null, null, null);
-		Widget::create_action("cleanup", null, null, null);
+		for(int i=0;i<xargc;i++){
+			xargv[i] = std::string(argv[i]);
+		}
 
-		Widget::wparent	= new Widget;
+		if( Widget::widget_base::geometry.width() lte 0 ){
+			Widget::widget_base::geometry.width(100);
+		}
 
-		Widget::wparent->winfo_t::window = xDisplay::root();
+		if( Widget::widget_base::geometry.height() lte 0 ){
+			Widget::widget_base::geometry.height(100);
+		}
 
-		set(Widget::winfo_t::geometry, 800, 500);
+		GLint	glattr[]	= {GLX_DOUBLEBUFFER, GLX_RGBA, GLX_DEPTH_SIZE, 24, None};
+XSetWindowAttributes	swin_attr;
+		ulong	vmask		= CWColormap | CWEventMask;
+		long	emask		= KeyPressMask | ButtonPressMask | StructureNotifyMask | ExposureMask;
 
-		Widget::winfo_t::at.set( (xDisplay::width() - Widget::winfo_t::geometry.width())/2, (xDisplay::height() - Widget::winfo_t::geometry.height())/2 );
+		Widget::widget_base::vis_info	= glXChooseVisual(xDisplay::display_pointer(), null, glattr);
+		if(Widget::widget_base::vis_info is null){
+			std::cerr << "glXChooseVisual failed to execute properly: tsx::Application()" << std::endl;
+			exit(1);
+		}
 
-		Widget::winfo_t::window	= XCreateWindow(
-			xDisplay::display_pointer(), Widget::wparent->winfo_t::window,
-			(int)Widget::winfo_t::at.x(), (int)Widget::winfo_t::at.y(),
-			(uint)Widget::winfo_t::geometry.width(), (uint)Widget::winfo_t::geometry.height(),
-			1, DefaultDepth( xDisplay::xserv, xDisplay::xnumb ), InputOutput,
-			DefaultVisual( xDisplay::xserv, xDisplay::xnumb ), vmask, &swin_attr
-		);
+		Widget::widget_base::colormap	= XCreateColormap(xDisplay::display_pointer(), xDisplay::root(), Widget::widget_base::vis_info->visual, AllocNone);
 
-		if( Widget::winfo_t::window is 0 )
-			Widget::winfo_t::created = false;
-		else	Widget::winfo_t::created = true;
+		swin_attr.event_mask	= emask;
+		swin_attr.colormap	= Widget::widget_base::colormap;
 
-		Widget::winfo_t::update = true;
+		Widget::widget_base::window	= XCreateWindow(
+								xDisplay::display_pointer(), xDisplay::root(),
+								Widget::widget_base::at.x(), Widget::widget_base::at.y(),
+								Widget::widget_base::geometry.width(), Widget::widget_base::geometry.height(),
+								1, Widget::widget_base::vis_info->depth,
+								InputOutput, Widget::widget_base::vis_info->visual,
+								vmask, &swin_attr
+							);
+		if( Widget::widget_base::window is 0 ){
+			std::cerr << "Failed to create tsx::Application window" << std::endl;
+			std::cerr << "Exiting program" << std::endl;
+			exit(1);
+		}else	Widget::winfo_t::created = true;
+
+		XStoreName(xDisplay::display_pointer(), Widget::widget_base::window, xargv[0].c_str());
+
 	}
 
 	Application::~Application(){
@@ -88,6 +101,16 @@ namespace	tsx{
 
 		Widget::show();
 		XEvent	evt;
+
+		if( Widget::child_list.size() gt 0 ){
+			for(
+				WidgetList::iterator child = Widget::child_list.begin();
+				child isnot Widget::child_list.end();
+				++child
+			){
+				(*child)->show();
+			}
+		}
 
 		while( running() ){
 			XNextEvent( xDisplay::display_pointer(), &evt );

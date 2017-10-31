@@ -71,6 +71,8 @@ namespace	tsx{
 	XVisualInfo	*	vis_info;	// dont know about right here //
 	GLint		*	gl_iarr;
 	GLfloat		*	gl_farr;
+	GLXContext		glx_context;
+	int			xclass;		// InputOutput, OutputOnly, CopyFromParent //
 	bool			created;
 	bool			mapped;
 	bool			update;

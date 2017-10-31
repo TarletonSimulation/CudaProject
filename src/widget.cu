@@ -16,6 +16,7 @@ namespace	tsx{
 		winfo_t::mapped		= false;
 		winfo_t::update		= false;
 		winfo_t::blocking	= false;
+		winfo_t::xclass		= InputOutput;
 	}
 
 	widget_base::~widget_base(){
@@ -51,57 +52,76 @@ namespace	tsx{
 	{return	this;}
 
 
-	Widget *
-	Widget::create_widget(Widget * Parent, const Rectangle & geom, const Point & place){
-		if( Parent is null )
-			return	null;
-	else	if( Parent->xdisplay isnot null ){
-			if( Parent->xdisplay->connected() is false )
-				return	null;
-			else{
-				Widget * child = new Widget(Parent->xdisplay);
-
-				child->winfo_t::geometry = geom;
-				child->winfo_t::at = place;
-				child->wparent	= Parent;
-
-				XSetWindowAttributes	swin_attr;
-				ulong	vmask = CWBackPixel | CWBorderPixel | CWEventMask;
-
-				swin_attr.background_pixel = 0xdead;
-				swin_attr.border_pixel = 0xbeaf;
-				swin_attr.event_mask = XEVT_DEFAULT_WINDOW_MASK;
-
-				if( child->winfo_t::geometry.width() is 0 )
-					child->winfo_t::geometry.width(10);
-				if( child->winfo_t::geometry.height() is 0 )
-					child->winfo_t::geometry.height(10);
-
-				child->winfo_t::window = XCreateWindow(
-					child->xdisplay->display_pointer(), child->wparent->winfo_t::window,
-					child->winfo_t::at.x(), child->winfo_t::at.y(),
-					child->winfo_t::geometry.width(), child->winfo_t::geometry.height(),
-					2, child->xdisplay->depth(), InputOutput, child->xdisplay->visual(),
-					vmask, &swin_attr
-				);
-
-				if( child->winfo_t::window is 0 )
-					return	null;
-				else
-					child->winfo_t::created = true;
-
-				
-
-			return	child;
-			}
+	Widget &
+	Widget::create(Widget & Parent, const Rectangle & geom, const Point & place){
+		if( Parent.xdisplay->connected() is false ){
+			std::cerr << "Function Widget::create(...) failed to create widget" << std::endl;
+			std::cerr << "\tParent widget not connected to display" << std::endl;
+			exit(2);
 		}
-	return	null;
+
+		Widget * child = new Widget;
+
+		Rectangle::set(child->widget_base::geometry, geom);
+		Point::set(child->widget_base::at, place);
+
+		child->wparent	= &Parent;
+		child->xdisplay	= Parent.xdisplay;
+
+		ulong	vmask	= CWColormap | CWEventMask;
+		long	emask	= ButtonPressMask | EnterWindowMask | LeaveWindowMask | ExposureMask | StructureNotifyMask;
+XSetWindowAttributes	swa;
+		GLint	glattr[]= {GLX_RGBA, GLX_DOUBLEBUFFER, GLX_DEPTH_SIZE, 24};
+		
+		child->widget_base::vis_info	= Parent.widget_base::vis_info;
+
+		if( child->widget_base::vis_info is null ){
+			std::cerr << "Failed to create visual info pointer" << std::endl;
+			std::cerr << "Function: Widget::create(...)" << std::endl;
+			exit(3);
+		}
+
+		child->widget_base::colormap	= XCreateColormap(
+								child->xdisplay->display_pointer(),
+								child->xdisplay->root(),
+								child->widget_base::vis_info->visual,
+								AllocNone
+								);
+
+		swa.event_mask	= emask;
+		swa.colormap	= child->widget_base::colormap;
+
+		child->widget_base::window = XCreateWindow(
+								child->xdisplay->display_pointer(), Parent.widget_base::window,
+								child->widget_base::at.x(), child->widget_base::at.y(),
+								child->widget_base::geometry.width(), child->widget_base::geometry.height(),
+								2, child->widget_base::vis_info->depth, CopyFromParent,
+								child->widget_base::vis_info->visual, vmask, &swa
+							);
+		
+		if( child->widget_base::window is 0 ){
+			std::cerr << "Function Widget::create(...) failed to craeate widget" << std::endl;
+			std::cerr << "\tExiting program..." << std::endl;
+			exit(2);
+		}else	child->winfo_t::created = true;
+		
+		child->widget_base::glx_context	= glXCreateContext(child->xdisplay->display_pointer(), child->widget_base::vis_info, null, true);
+
+		Parent.child_list.push_back(child);
+	return	*child;
 	}
 
-	Widget *
-	create_widget(Widget * Parent, const Rectangle & geom, const Point & place){
-		return	Widget::create_widget(Parent, geom, place);
+	Widget &
+	create_widget(Widget & Parent, const Rectangle & geom, const Point & place){
+		return	Widget::create(Parent, geom, place);
 	}
+
+	Widget &
+	Widget::create(const Rectangle & geom, const Point & place){
+		return	tsx::create_widget(*this,geom,place);
+	}
+
+
 
 
 	bool
@@ -169,18 +189,52 @@ namespace	tsx{
 	else	if( xdisplay is null )
 			return;
 		else	XMapWindow(xdisplay->display_pointer(), winfo_t::window);
+		XFlush(xdisplay->display_pointer());
+		widget_base::mapped = true;
 	}
 
 	bool
 	Widget::showing()
-	const{
-		return	winfo_t::mapped;
-	}
+	const{return winfo_t::mapped;}
 
 	bool
-	Widget::showing(const Widget & w){
-		return	w.showing();
-	}
+	Widget::showing(const Widget & w)
+	{return	w.showing();}
+
+	void
+	Widget::size(float w, float h)
+	{Rectangle::set(widget_base::geometry,w,h);}
+
+	void
+	Widget::size(Widget & widg, float w, float h)
+	{widg.size(w,h);}
+
+	const Rectangle &
+	Widget::size()
+	const{return widget_base::geometry;}
+
+	const Rectangle &
+	Widget::size(const Widget & widg)
+	{return	widg.size();}
+
+
+	void
+	Widget::position(float x, float y)
+	{tsx::Point::set(widget_base::at,x,y,0.0f);}
+
+	void
+	Widget::position(Widget & widg, float x, float y)
+	{widg.position(x,y);}
+
+	const Point &
+	Widget::position()
+	const{return widget_base::at;}
+
+	const Point &
+	Widget::position(const Widget & widg)
+	{return widg.position();}
+
+
 
 	std::list<int>
 	Widget::operator () (const std::string & action){

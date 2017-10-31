@@ -72,7 +72,7 @@ then
 
 		name=`basename $x .cu`
 		printf	"Compiling Program: %15s\t" "$x"
-		$Comp $StdWarn -rdc=true main/$x -o bin/$name $LibTsx -I $CudaProject $StdPkg
+		$Comp $StdWarn -rdc=true main/$x -o bin/$name $LibTsx -I $CudaProject $StdPkg -lglut
 
 		if [ -f bin/$name ]
 		then

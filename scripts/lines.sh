@@ -14,5 +14,17 @@ do
 	line_count=$(expr $line_count + $k)
 done
 
+# to account for the files that were included from 'Cuda by Example' #
+fx=$(find $CudaProject/include/cuda -type f)
+dx=0
+
+for x in $fx
+do
+	df=$(cat $x | wc -l)
+	dx=$(expr $dx + $df)
+done
+
+line_count=$(expr $line_count - $dx)
+
 printf "Total Lines in \'$(basename $CudaProject)\':\t$line_count\n"
 
