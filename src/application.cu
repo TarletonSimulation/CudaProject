@@ -224,8 +224,8 @@ XSetWindowAttributes	swin_attr;
 
 	std::list<int>
 	Application::operator ()(const std::string & action){
-		Widget * w = (Widget *)this;
-		return	(*w)(action);
+		Widget & w = *static_cast<Widget *>(this);
+		return	(w)(action);
 	}
 
 }
