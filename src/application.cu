@@ -30,6 +30,7 @@ namespace	tsx{
 		}
 
 		if( Widget::created() is true ){
+			glXDestroyContext(XDisplayPtr(), Widget::widget_base::glx_context);
 			XDestroyWindow(XDisplayPtr(), Widget::XWindow());
 			Widget::created(false);
 		}
