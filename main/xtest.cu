@@ -41,9 +41,6 @@ int app_expose(void * app, void * disp, void * ret_v){
 	glClearColor(1.0f,1.0f,1.0f,1.0f);
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-	glMatrixMode( GL_PROJECTION );
-	glLoadIdentity();
-	glOrtho(-1.0f,1.0f,-1.0f,1.0f,1.0f,20.0f);
 return	x;
 }
 
