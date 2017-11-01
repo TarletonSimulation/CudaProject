@@ -27,8 +27,9 @@ int app_expose(void * app, void * disp, void * ret_v){
 	Display	*	display = static_cast<Display *>(disp);
 	int 	&	x	= *static_cast<int *>(ret_v);
 
-	XWindowAttributes wa;
-	std::cout << "expose" << std::endl;
+	XWindowAttributes win_attr;
+	XGetWindowAttributes( prog->XDisplayPtr(), prog->XWindow(), &(win_attr) );
+	glViewport(0,0, win_attr.width, win_attr.height);
 
 	if( x is -1 ){
 		std::cout << "Failed to connect to XDisplay()" << std::endl;
@@ -57,7 +58,7 @@ int app_resize(void * app, void * n1, void * ret_v){
 	// test xlib function //
 	// * later reconfigure all window structure items //
 	// * set resize and repos to false //
-//	XResizeWindow(prog->XDisplayPtr(), prog->Widget::XWindow(), rect.width(), rect.height());
+	XResizeWindow(prog->XDisplayPtr(), prog->Widget::XWindow(), rect.width(), rect.height());
 return	0;
 }
 

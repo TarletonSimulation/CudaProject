@@ -93,11 +93,8 @@ XSetWindowAttributes	swin_attr;
 	else	if( Widget::winfo_t::created is false )
 			return	false;
 
-		if( action_count() gt 0 ){
-			Widget::call_actions("startup", XWindow());
-		}
-
 		xrun = true;
+		bool	startup_called = false;
 
 		Widget::show();
 		XEvent	evt;
@@ -116,7 +113,14 @@ XSetWindowAttributes	swin_attr;
 		}
 
 		while( running() ){
-			XNextEvent( xDisplay::display_pointer(), &evt );
+			if( startup_called is false ){
+				Wigdet::call_actions("startup");
+				startup_called = true;
+			}
+
+			if( startup_called is true ){
+				XNextEvent(XDisplayPtr(), &evt);
+
 			switch( evt.type ){
 				case	ButtonPress:
 					break;
@@ -136,16 +140,14 @@ XSetWindowAttributes	swin_attr;
 					}
 					break;
 				case	Expose:
-					XGetWindowAttributes(XDisplayPtr(), Widget::XWindow(), &win_attr);
-					glViewport(0,0, win_attr.width, win_attr.height);
-
 					Widget::size(win_attr.width, win_attr.height);
 					
 					Widget::call_actions("expose", evt.xany.window);
 					glXSwapBuffers(XDisplayPtr(), Widget::XWindow());
 					break;
 			}
-		}
+		}	// end next event //
+		}	// end while loop //
 
 		XDestroyWindow(xDisplay::display_pointer(), Widget::winfo_t::window);
 	return	true;
