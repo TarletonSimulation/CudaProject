@@ -29,3 +29,7 @@ scripts/
 	+ Compilation script
 	*	+ stat file for last modification time, to speed up compilation by not compiling sources that have already been built +
 
+diagrams/
+	+ Library Diagrams +
+	*	+ create diagrams for every class and data structure and 
+	*	++ provide an explanation of their methods, uses, and modifications
