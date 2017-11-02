@@ -1,3 +1,3 @@
 # CudaProject
 
---- This project is a work in progress ---
+--- Currently Reconstructing Xlib wrappers ---
