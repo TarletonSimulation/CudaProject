@@ -114,7 +114,7 @@ XSetWindowAttributes	swin_attr;
 
 		while( running() ){
 			if( startup_called is false ){
-				Wigdet::call_actions("startup");
+				Widget::call_actions("startup");
 				startup_called = true;
 			}
 

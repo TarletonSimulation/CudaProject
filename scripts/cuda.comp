@@ -2,6 +2,24 @@
 
 . scripts/funcs.sh
 
+main_only=false
+src_only=false
+
+for x in $@
+do
+	case $x in
+		--comp-main|-M)
+			main_only=true
+			src_only=false
+		;;
+		--comp-src|-S)
+			src_only=true
+			main_only=false
+		;;
+	esac
+done
+
+
 tput reset
 
 if [ ! -d $TsimDir ]
@@ -24,6 +42,10 @@ if test `find src -type f | grep .cu | wc -l` -gt 0
 then
 	for x in `ls src`
 	do
+		if [ "$main_only" == "true" ]
+		then	break
+		fi
+
 		if [ -d $x ]
 		then continue
 		fi
@@ -48,7 +70,7 @@ then
 	done
 fi
 
-if test `find sbin -type f | grep .o | wc -l` -gt 0
+if test `find sbin -type f | grep .o | wc -l` -gt 0 && [ "$main_only" == "false" ]
 then
 	if [ -f lib/$LibTsx ]
 	then
@@ -65,6 +87,11 @@ then
 	fi
 fi
 
+if [ "$src_only" == "true" ]
+then
+	exit 0
+fi
+
 if test `find main -type f | grep .cu | wc -l` -gt 0
 then
 	for x in `ls main`
@@ -75,7 +102,7 @@ then
 
 		name=`basename $x .cu`
 		printf	"Compiling Program: %15s\t" "$x"
-		$Comp $StdWarn -rdc=true main/$x -o bin/$name $LibTsx -I $CudaProject $StdPkg -lglut
+		$Comp $StdWarn -rdc=true main/$x -o bin/$name lib/$LibTsx -I $CudaProject $StdPkg
 
 		if [ -f bin/$name ]
 		then

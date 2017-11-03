@@ -169,6 +169,8 @@ XSetWindowAttributes	swa;
 		swa.event_mask	= emask;
 		swa.colormap	= child->widget_base::colormap;
 
+		Rectangle::set(child->widget_base::geometry,1,1);
+
 		child->widget_base::window = XCreateWindow(
 								child->xdisplay->display_pointer(), Parent.widget_base::window,
 								child->widget_base::at.x(), child->widget_base::at.y(),

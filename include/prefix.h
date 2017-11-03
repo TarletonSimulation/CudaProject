@@ -91,6 +91,18 @@
 #	 define		tsx_min(a,b)	( ( ( (a)<(b) )?(a):(b) ) )
 #endif
 
+#if	!defined	STDIN
+#	 define		STDIN		0
+#endif
+
+#if	!defined	STDOUT
+#	 define		STDOUT		1
+#endif
+
+#if	!defined	STDERR
+#	 define		STDERR		2
+#endif
+
 
 namespace tsx{
 

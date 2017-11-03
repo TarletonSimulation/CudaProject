@@ -2,11 +2,13 @@
 #	 define	  __tsx__file__
 
 #include <tsx/prefix.h>
+#include <tsx/bits/file.h>
 
 extern "C"{
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/file.h>
+#include <sys/time.h>
 
 #include <fcntl.h>
 #include <pwd.h>
@@ -67,133 +69,58 @@ namespace	tsx{
 
 
 
-	class	User{
-		public:
-				 User();
-				 User(const std::string &, ulong);
-				~User();
-
-			ulong	id();
-		std::string	name();
-
-	bool	operator	== (const User &);
-	bool	operator	!= (const User &);
-const	User &	operator	 = (const User &);
-
-		protected:
-		std::string	uname;
-			ulong	uid;
-		private:
-	};
-
-	
-	class	Group{
-		public:
-	typedef	std::list<User>	Members;
-
-				 Group();
-				 Group(const std::string &, ulong);
-				~Group();
-
-			bool	create_new_user(const std::string &);
-			
-			ulong	id()		const;
-			ulong	uid(const std::string &)
-						const;
-		std::string	name()		const;
-
-		Members		members()	const;
-
-	bool	operator	== (const Group &);
-	bool	operator	!= (const Group &);
-const	Group &	operator	 = (const Group &);
-
-		protected:
-		ulong		gid;
-		std::string	gname;
-		Members		gusers;		// users in group //
-		private:
-	};
-
-
 	class	File{
 		public:
-
-		struct	Lock{
-				 Lock();
-				~Lock();
-
-			int	begin;		// will not read or write from here // if -1 no lock will be applied //
-			int	end;		// will lock up to this point // if -1 locks from beginning bit to end of file //
-			ulong	mode;		// locking mode //
-
-		bool	operator == (const Lock &);
-		bool	operator != (const Lock &);
-	const	Lock &	operator  = (const Lock &);
-		};
-
 				 File();
 				 File(const std::string &);
 				~File();
 
-	static		bool	is_open(const File &);
-			bool	is_open()	const;
+	// return file name //
+	static	std::string	name(const File &);
+		std::string	name()	const;
 	
-	static		bool	open(File &);
-			bool	open();
+	// return file owner name //
+	static	std::string	owner(const File &);
+		std::string	owner()	const;
 	
-	static		bool	reopen(File &);
-			bool	reopen();
+	// return file group name //
+	static	std::string	group(const File &);
+		std::string	group()	const;
 
-	static		bool	open(File &, const std::string &, int =0, mode_t =0);
-			bool	open(const std::string &, int =0, mode_t =0);
+	// open file return file descriptor //
+		static	int	open(File &, const std::string &, ulong, mode_t =0);
+		static	int	open(File &);
+			int	open(const std::string &, ulong, mode_t =0);
+			int	open();
 
-	static		bool	close(File &);
+	// close file // return true on success //
+		static	bool	close(File &);
 			bool	close();
 
-static	const	std::string &	name(const File &);
-	const	std::string &	name()		const;
+	// true if the file is open //
+		static	bool	is_open(const File &);
+			bool	is_open()	const;
 
-	static		bool	rename(File &, const std::string &);
-			bool	rename(const std::string &);
+	// write to file // return number of bytes written //
+		static	int	write(File &, const void *, size_t, size_t);
+			int	write(const void *, size_t, size_t);
 
-	static		User	owner(const File &);
-			User	owner()		const;
-	
-	static		Group	group(const File &);
-			Group	group()		const;
+	// read from file // return number of bytes read //
+		static	int	read(File &, void *, size_t, size_t);
+			int	read(void *, size_t, size_t);
 
-			Lock	new_lock(int, int);
-			Lock &	get_lock();
-		const	Lock &	copy_lock()	const;
-			
-			bool	lock_applied()	const;
-			void	lock(bool =true);
-			void	release_lock();
-
-	static		int	read(File &, void *&, size_t);
-			int	read(void *, size_t);
-	
-	static		int	write(File &, const void *&, size_t);
-			int	write(const void *&, size_t);
-
-
-	bool	operator	== (const File &);
-	bool	operator	!= (const File &);
-const	File &	operator	 = (const File &);
+	// check for file lock in file system // future use //
+		static	bool	has_lock(const File &);
+			bool	has_lock()	const;
 
 		protected:
-		std::string	fname;
-		mode_t		fmode;
-		int		fflags;
-		Lock		flock;
-		int		fdesc;
-
-		bool		fopened;
-		bool		flock_init;
+			int	desc;	// file descriptor //
+		std::string	fname;	// file name //
+			mode_t	fmode;	// file mode //
+			ulong	fflag;	// file flags //
+			bool	fob;	// file opened boolean //
 		private:
 	};
-
 
 
 
