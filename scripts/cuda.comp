@@ -82,8 +82,6 @@ then
 	if [ -f lib/$LibTsx ]
 	then
 		echo "TSX Library Built"
-		LibTsx="$CudaProject/lib/$LibTsx"
-	else	LibTsx=""
 	fi
 fi
 
